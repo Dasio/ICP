@@ -6,8 +6,8 @@
 
 enum OpCode : unsigned char
 {
-    CMSG_HANDSHAKE_REQUEST = 0,
-    SMSG_HANDSHAKE_RESPONSE,
+    CMSG_HANDSHAKE_RESPONSE = 0,
+    SMSG_HANDSHAKE_REQUEST,
     MAX_OPCODE
 };
 

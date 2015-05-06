@@ -29,3 +29,8 @@
 
 # Tmp files
 *~
+
+# Object and binary folder
+/bin
+/obj
+/qmake

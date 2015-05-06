@@ -1,10 +1,8 @@
 #include "Packet.h"
+#include "../common/MyExc.h"
 #include <cstring>
 #include <iostream>
 
-#define OPCODE_LEN (sizeof(unsigned char))
-#define PACKET_DATA_SIZE (sizeof(unsigned int))
-#define PACKET_HEADER_SIZE OPCODE_LEN + PACKET_DATA_SIZE
 
 Packet::Packet(OpCode op, unsigned int size) : _size(size),_writePos(PACKET_HEADER_SIZE)
 {
@@ -18,6 +16,22 @@ Packet::Packet(const unsigned char* buffer, unsigned int size) : _size(size),_wr
 {
     _buffer.resize(_size);
     memcpy(&_buffer[0], buffer, _size);
+}
+void Packet::appendBuffer(unsigned char* buffer,int size)
+{
+    if(_size < size + _writePos)
+        throw MyExc("Packet::appendBuffer");
+    memcpy(&_buffer[_writePos], buffer, size);
+    _writePos += size;
+}
+unsigned int Packet::getSize()
+{
+    return _size;
+}
+
+unsigned int Packet::getDataSize()
+{
+    return static_cast<unsigned int>(_buffer[1]);
 }
 
 OpCode Packet::getOpCode()
@@ -37,14 +51,14 @@ std::vector<unsigned char> Packet::getBufferCopy()
 
 Packet& Packet::operator<<(const unsigned int data)
 {
-    memcpy(&_buffer[0] + _writePos, &data, sizeof(data));
+    memcpy(&_buffer[_writePos], &data, sizeof(data));
     _writePos += sizeof(data);
     return *this;
 }
 
 Packet& Packet::operator<<(const std::string &data)
 {
-    memcpy(&_buffer[0] + _writePos, data.data(), data.length() + 1);
+    memcpy(&_buffer[_writePos], data.data(), data.length() + 1);
     _writePos += data.length() + 1;
     return *this;
 }
