@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "lobby.h"
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -16,7 +17,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_connectButton_clicked()
 {
-    QMessageBox msgBox;
-    msgBox.setText("Connect button");
-    msgBox.exec();
+    bool ok;
+    int port = ui->portNumberEdit->text().toInt(&ok,10);
+    if(!ok)
+        ui->infoLabel->setText("Wrong port");
+    else
+    {
+        hide();
+        Lobby lobby(this);
+        lobby.exec();
+        show();
+
+    }
 }

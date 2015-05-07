@@ -14,18 +14,59 @@
    <string>Labyrinth 2015</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="connectButton">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>40</y>
-      <width>99</width>
-      <height>27</height>
+      <x>12</x>
+      <y>22</y>
+      <width>239</width>
+      <height>95</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Connect</string>
-    </property>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="hostNameLabel">
+       <property name="text">
+        <string>Host Name</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="hostNameEdit">
+       <property name="text">
+        <string>localhost</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="portLabel">
+       <property name="text">
+        <string>Port</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="portNumberEdit">
+       <property name="text">
+        <string>11111</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QPushButton" name="connectButton">
+       <property name="text">
+        <string>Connect</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLabel" name="infoLabel">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

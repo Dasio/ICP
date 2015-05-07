@@ -13,11 +13,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+        lobby.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+        lobby.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+        lobby.ui
 
 DESTDIR = ../bin
 OBJECTS_DIR = ../obj/gui
