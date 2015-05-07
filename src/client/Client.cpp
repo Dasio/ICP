@@ -1,14 +1,10 @@
 #include "Client.h"
 #include <boost/bind.hpp>
 
-Client::Client(const std::string &hostname, int port) : _ioService(), _socket(_ioService),_packet(nullptr)
+Client::Client(const std::string &hostname, int port) : _ioService(), _hostName(hostname),_port(port),_socket(_ioService),_packet(nullptr)
 {
-    boost::asio::ip::tcp::resolver::query query(hostname, std::to_string(port));
-    boost::asio::ip::tcp::resolver resolver(_ioService);
-    resolver.async_resolve(query,boost::bind(&Client::resolve, this, boost::asio::placeholders::error,boost::asio::placeholders::iterator));
-    _ioService.run();
+    _thread = std::thread(&Client::start, this);
 }
-
 void Client::resolve(const boost::system::error_code &err, boost::asio::ip::tcp::resolver::iterator ei)
 {
     if(!err)
@@ -19,7 +15,22 @@ void Client::resolve(const boost::system::error_code &err, boost::asio::ip::tcp:
     }
     else
         throw MyExc("Client::resolve: Failed to resolve query");
-
+}
+void Client::wait()
+{
+    _thread.join();
+}
+void Client::stop()
+{
+    _ioService.stop();
+    wait();
+}
+void Client::start()
+{
+    boost::asio::ip::tcp::resolver::query query(_hostName, std::to_string(_port));
+    boost::asio::ip::tcp::resolver resolver(_ioService);
+    resolver.async_resolve(query,boost::bind(&Client::resolve, this, boost::asio::placeholders::error,boost::asio::placeholders::iterator));
+    _ioService.run();
 }
 void Client::receive()
 {

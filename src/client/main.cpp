@@ -15,6 +15,7 @@ int main(int argc, char **argv)
     try
     {
        Client client(argv[1],port);
+       client.wait();
     }
     catch (MyExc& exc)
     {

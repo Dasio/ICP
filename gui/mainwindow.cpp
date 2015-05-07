@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "lobby.h"
 #include <QMessageBox>
+#include <thread>
+#include "../src/client/Client.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -15,6 +17,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
 void MainWindow::on_connectButton_clicked()
 {
     bool ok;
@@ -23,10 +26,18 @@ void MainWindow::on_connectButton_clicked()
         ui->infoLabel->setText("Wrong port");
     else
     {
-        hide();
-        Lobby lobby(this);
-        lobby.exec();
-        show();
-
+        try
+        {
+            Client client(ui->hostNameEdit->text().toStdString(),port);
+            hide();
+            Lobby lobby(this);
+            lobby.exec();
+            client.stop();
+            show();
+        }
+        catch(MyExc &err)
+        {
+            ui->infoLabel->setText("Failed to connect");
+        }
     }
 }
