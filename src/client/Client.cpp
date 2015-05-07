@@ -1,7 +1,7 @@
 #include "Client.h"
 #include <boost/bind.hpp>
 
-Client::Client(const std::string &hostname, int port) : _ioService(), _socket(_ioService), handShake(false), _packet(nullptr)
+Client::Client(const std::string &hostname, int port) : _ioService(), _socket(_ioService),_packet(nullptr)
 {
     boost::asio::ip::tcp::resolver::query query(hostname, std::to_string(port));
     boost::asio::ip::tcp::resolver resolver(_ioService);
@@ -41,6 +41,19 @@ void Client::handleReceive(size_t bytes, const boost::system::error_code &err)
         else
         {
             _packet->appendBuffer(&_buffer[readPos], bytes - readPos);
+        }
+        // Packet cant be completed without header
+        size = _packet->getSize();
+        if(size < PACKET_HEADER_SIZE)
+        {
+            remainingBytes -= size;
+            readPos += size;
+            continue;
+        }
+        // Need to shrink buffer, contains also data from next packet
+        if(_packet->getSize() > _packet->getDataSize() + PACKET_HEADER_SIZE)
+        {
+            _packet->shrink();
         }
         size = _packet->getSize();
         remainingBytes -= size;

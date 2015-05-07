@@ -32,11 +32,17 @@ public:
      * @return Data length in bytes
      */
     unsigned int getDataSize();
+
     /**
      * Get buffer
      * @return pointer to buffer of packet
      */
     const unsigned char* getBuffer();
+
+    /**
+     * Shrink packet's buffer to fit dataSize
+     */
+    void shrink();
 
     /**
      * Get copy of buffer

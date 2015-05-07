@@ -9,7 +9,7 @@ Packet::Packet(OpCode op, unsigned int size) : _size(size),_writePos(PACKET_HEAD
     _buffer.resize(PACKET_HEADER_SIZE + _size);
     // First byte is Opcode
     _buffer[0] = op;
-    memset(&_buffer[1],_size,PACKET_DATA_SIZE);
+    memcpy(&_buffer[1],&_size,PACKET_DATA_SIZE);
 }
 
 Packet::Packet(const unsigned char* buffer, unsigned int size) : _size(size),_writePos(size),_readPos(PACKET_HEADER_SIZE)
@@ -31,10 +31,13 @@ unsigned int Packet::getSize()
 
 unsigned int Packet::getDataSize()
 {
-    //CHECK! Propably wrong
-    return static_cast<unsigned int>(_buffer[1]);
+    return *((unsigned int*)&_buffer[1]);
 }
-
+void Packet::shrink()
+{
+    _size = getDataSize() + PACKET_HEADER_SIZE;
+    _buffer.resize(_size);
+}
 OpCode Packet::getOpCode()
 {
     return static_cast<OpCode>(_buffer[0]);

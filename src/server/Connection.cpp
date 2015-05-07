@@ -3,7 +3,7 @@
 #include <boost/bind.hpp>
 
 
-Connection::Connection(boost::asio::ip::tcp::socket socket, ConnectionManager& manager) : _socket(std::move(socket)),_connectionManager(manager),_connected(false),_state(WAIT_HANDSHAKE)
+Connection::Connection(boost::asio::ip::tcp::socket socket, ConnectionManager& manager) : _socket(std::move(socket)),_connectionManager(manager),_packet(nullptr),_connected(false),_state(WAIT_HANDSHAKE)
 {
 
 }
@@ -42,12 +42,22 @@ void Connection::handleReceive(size_t bytes, const boost::system::error_code& er
         {
             _packet->appendBuffer(&_buffer[readPos], bytes - readPos);
         }
+        // Packet cant be completed without header
+        size = _packet->getSize();
+        if(size < PACKET_HEADER_SIZE)
+        {
+            remainingBytes -= size;
+            readPos += size;
+            continue;
+        }
+        // Need to shrink buffer, contains also data from next packet
+        if(_packet->getSize() > _packet->getDataSize() + PACKET_HEADER_SIZE)
+        {
+            _packet->shrink();
+        }
         size = _packet->getSize();
         remainingBytes -= size;
         readPos += size;
-        // Packet cant be completed without header
-        if(size < PACKET_HEADER_SIZE)
-            continue;
         // Packet is complete
         if(size == _packet->getDataSize() + PACKET_HEADER_SIZE)
         {
@@ -73,10 +83,10 @@ void Connection::handleSend(Packet &packet, size_t bytes, const boost::system::e
 }
 void Connection::processPacket()
 {
-    std::cout << "CMSG_HANDSHAKE_REQUEST " << std::endl;
     OpCode op = _packet->getOpCode();
     if(op == CMSG_HANDSHAKE_REQUEST)
     {
+        std::cout << "CMSG_HANDSHAKE_REQUEST" << std::endl;
         unsigned int magic;
         *_packet >> magic;
         Packet response(SMSG_HANDSHAKE_RESPONSE, 4);
