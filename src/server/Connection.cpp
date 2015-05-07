@@ -11,9 +11,7 @@ Connection::Connection(boost::asio::ip::tcp::socket socket, ConnectionManager& m
 void Connection::start()
 {
     _connected = true;
-    Packet handshake(SMSG_HANDSHAKE_REQUEST,0);
     std::cout << "Client started: " << _socket.remote_endpoint().address().to_string() << std::endl;
-    send(handshake);
     receive();
 }
 
@@ -31,7 +29,33 @@ void Connection::handleReceive(size_t bytes, const boost::system::error_code& er
 {
     if(err)
         return;
-    std::cout << "recv: " << bytes << std::endl;
+    unsigned int readPos = 0;
+    unsigned int size = 0;
+    unsigned int remainingBytes = bytes;
+    while(remainingBytes > 0)
+    {
+        if(_packet == nullptr)
+        {
+            _packet = new Packet(&_buffer[readPos], bytes - readPos);
+        }
+        else
+        {
+            _packet->appendBuffer(&_buffer[readPos], bytes - readPos);
+        }
+        size = _packet->getSize();
+        remainingBytes -= size;
+        readPos += size;
+        // Packet cant be completed without header
+        if(size < PACKET_HEADER_SIZE)
+            continue;
+        // Packet is complete
+        if(size == _packet->getDataSize() + PACKET_HEADER_SIZE)
+        {
+             processPacket();
+            _packet = nullptr;
+        }
+    }
+    receive();
 
 }
 void Connection::disconnect()
@@ -45,6 +69,31 @@ void Connection::handleSend(Packet &packet, size_t bytes, const boost::system::e
     if(err)
     {
         disconnect();
+    }
+}
+void Connection::processPacket()
+{
+    std::cout << "CMSG_HANDSHAKE_REQUEST " << std::endl;
+    OpCode op = _packet->getOpCode();
+    if(op == CMSG_HANDSHAKE_REQUEST)
+    {
+        unsigned int magic;
+        *_packet >> magic;
+        Packet response(SMSG_HANDSHAKE_RESPONSE, 4);
+        if(magic == 42)
+        {
+            response << 1;
+            _state = OK;
+        }
+        else
+            response << 0;
+        send(response);
+        if(magic != 42)
+            disconnect();
+    }
+    else
+    {
+        throw MyExc("Connection::processPacket: Unknown packet");
     }
 }
 void Connection::stop()

@@ -3,6 +3,7 @@
 
 #include <boost/asio.hpp>
 #include "../common/Packet.h"
+#include "../common/MyExc.h"
 
 class ConnectionManager;
 
@@ -20,8 +21,10 @@ private:
     void receive();
     void handleReceive(size_t bytes, const boost::system::error_code &err);
     void disconnect();
+    void processPacket();
     boost::asio::ip::tcp::socket _socket;
     ConnectionManager& _connectionManager;
+    Packet* _packet;
     bool _connected;
     enum State
     {

@@ -20,7 +20,7 @@ private:
     void handleSend(Packet /*&packet*/, size_t /*bytes*/, const boost::system::error_code& /*err*/);
     boost::asio::io_service _ioService;
     boost::asio::ip::tcp::socket _socket;
-
+    bool handShake;
     Packet* _packet;
     std::array<unsigned char, 8192> _buffer;
 };

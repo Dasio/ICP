@@ -53,8 +53,10 @@ public:
     // Writing data to Packet
     Packet& operator<<(const unsigned int data);
     Packet& operator<<(const std::string &data);
+    // Reading data from Packet
+    Packet& operator>>(unsigned int& data);
 private:
-    unsigned int _size,_writePos;
+    unsigned int _size,_writePos,_readPos;
     std::vector<unsigned char> _buffer;
 };
 

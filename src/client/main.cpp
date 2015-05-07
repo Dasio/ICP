@@ -12,6 +12,14 @@ int main(int argc, char **argv)
     if(*end != '\0')
         return 1;
     std::cout << "Client: " << argv[1] << " port: " << port << std::endl;
-    Client client(argv[1],port);
+    try
+    {
+       Client client(argv[1],port);
+    }
+    catch (MyExc& exc)
+    {
+        std::cerr << exc.what() << std::endl;
+        return 1;
+    }
     return 0;
 }

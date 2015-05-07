@@ -1,7 +1,7 @@
 #include "Client.h"
 #include <boost/bind.hpp>
 
-Client::Client(const std::string &hostname, int port) : _ioService(), _socket(_ioService), _packet(nullptr)
+Client::Client(const std::string &hostname, int port) : _ioService(), _socket(_ioService), handShake(false), _packet(nullptr)
 {
     boost::asio::ip::tcp::resolver::query query(hostname, std::to_string(port));
     boost::asio::ip::tcp::resolver resolver(_ioService);
@@ -63,6 +63,9 @@ void Client::handleConnect(const boost::system::error_code &err, boost::asio::ip
     if(!err)
     {
         std::cout << "Connected" << std::endl;
+        Packet packet(CMSG_HANDSHAKE_REQUEST, 4);
+        packet << 42;
+        send(packet);
         receive();
     }
     else if (ei != boost::asio::ip::tcp::resolver::iterator())
@@ -73,6 +76,8 @@ void Client::handleConnect(const boost::system::error_code &err, boost::asio::ip
         _socket.async_connect(ep,
             boost::bind(&Client::handleConnect, this, boost::asio::placeholders::error, ++ei));
     }
+    else
+        throw MyExc("Client::handleConnect - failed to connect");
 }
 void Client::handleSend(Packet /*&packet*/, size_t /*bytes*/, const boost::system::error_code& /*err*/)
 {
@@ -86,25 +91,16 @@ void Client::send(Packet &packet)
 void Client::processPacket()
 {
     OpCode op = _packet->getOpCode();
-    if (op == SMSG_HANDSHAKE_REQUEST)
+    if (op == SMSG_HANDSHAKE_RESPONSE)
     {
-        Packet packet(CMSG_HANDSHAKE_RESPONSE,4);
-        packet << 42;
-        send(packet);
-        std::cout << "Handshake" << std::endl;
+        std::cout << "SMSG_HANDSHAKE_RESPONSE" << std::endl;
+        unsigned int success;
+        *_packet >> success;
+        if(!success)
+            throw MyExc("Client::processPacket: Handshake failed");
+
     }
     else
-        std::cerr << "Unknown packet" << std::endl;
-    /*switch (_packet->getOpCode())
-    {
-        case SMSG_HANDSHAKE_REQUEST:
-            Packet packet(CMSG_HANDSHAKE_RESPONSE,4);
-            packet << 42;
-            send(packet);
-            std::cout << "Handshake" << std::endl;
-            break;
-        default:
-            std::cerr << "Unknown packet" << std::endl;
-    }*/
+        throw MyExc("Connection::processPacket: Unknown packet");
 }
 
