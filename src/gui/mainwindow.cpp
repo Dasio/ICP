@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QMessageBox>
+#include "game.h"
+#include <QGraphicsRectItem>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -18,7 +19,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_createGameButton_clicked()
 {
-    QMessageBox msg;
-    msg.setText("createGameButton");
-    msg.exec();
+    hide();
+    Game game(this);
+    game.exec();
+    show();
 }

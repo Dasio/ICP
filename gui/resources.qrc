@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/path">
+        <file>art/four.png</file>
+        <file>art/horizontal.png</file>
+        <file>art/three1.png</file>
+        <file>art/three2.png</file>
+        <file>art/three3.png</file>
+        <file>art/three4.png</file>
+        <file>art/two1.png</file>
+        <file>art/two2.png</file>
+        <file>art/two3.png</file>
+        <file>art/two4.png</file>
+        <file>art/vertical.png</file>
+    </qresource>
+    <qresource prefix="/player">
+        <file>art/down_stand.png</file>
+    </qresource>
+</RCC>

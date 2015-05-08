@@ -13,11 +13,17 @@ TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++11
 
 SOURCES += ../src/gui/main.cpp\
-        ../src/gui/mainwindow.cpp
+        ../src/gui/mainwindow.cpp \
+	../src/gui/game.cpp
 
-HEADERS  += ../src/gui/mainwindow.h
+HEADERS  += ../src/gui/mainwindow.h \
+	../src/gui/game.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+	game.ui
+
+RESOURCES += \
+    resources.qrc
 
 DESTDIR = ../bin
 OBJECTS_DIR = ../obj/gui
