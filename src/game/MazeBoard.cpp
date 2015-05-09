@@ -282,7 +282,7 @@ void MazeBoard::rotateFreeStone()
 }
 
 
-bool MazeBoard::onBoard(Coords pos)
+inline bool MazeBoard::onBoard(Coords pos)
 {
     if (pos.x > 0 && pos.x <= board_size && pos.y > 0 && pos.y <= board_size)
         return true;
@@ -290,33 +290,57 @@ bool MazeBoard::onBoard(Coords pos)
 }
 
 
-
-// typedef enum {RIGHT, DOWN, LEFT, UP} Direction;
+static inline bool notInQueue(Coords position, std::vector<Coords> &open_queue)
+{
+    for (uint x = 0; x < open_queue.size(); x++)
+    {
+        if (position == open_queue[x])
+            return false;
+    }
+    return true;
+}
 
 
 // RECURSION
-bool MazeBoard::checkPath(Coords start_pos, Coords end_pos)
+bool MazeBoard::checkPath(Coords start_pos, Coords end_pos, std::vector<Coords> &open_queue)
 {
+    std::cout << "start: [" << start_pos.x << "," << start_pos.y << "]" << std::endl;
     if (start_pos == end_pos)
         return true;
+    open_queue.push_back(start_pos);
 
     // expand to right
     if (board[INDEX_C(start_pos)].canGo(RIGHT) && onBoard(start_pos.right())
         && board[INDEX_C(start_pos.right())].canGo(LEFT)
-        && checkPath(start_pos.right(), end_pos))
+        && notInQueue(start_pos.right(), open_queue)
+        && checkPath(start_pos.right(), end_pos, open_queue))
             return true;
     else if (board[INDEX_C(start_pos)].canGo(DOWN) && onBoard(start_pos.down())
         && board[INDEX_C(start_pos.down())].canGo(UP)
-        && checkPath(start_pos.down(), end_pos))
+        && notInQueue(start_pos.down(), open_queue)
+        && checkPath(start_pos.down(), end_pos, open_queue))
             return true;
     else if (board[INDEX_C(start_pos)].canGo(LEFT) && onBoard(start_pos.left())
         && board[INDEX_C(start_pos.left())].canGo(RIGHT)
-        && checkPath(start_pos.left(), end_pos))
+        && notInQueue(start_pos.left(), open_queue)
+        && checkPath(start_pos.left(), end_pos, open_queue))
             return true;
     else if (board[INDEX_C(start_pos)].canGo(UP) && onBoard(start_pos.up())
         && board[INDEX_C(start_pos.up())].canGo(DOWN)
-        && checkPath(start_pos.up(), end_pos))
+        && notInQueue(start_pos.up(), open_queue)
+        && checkPath(start_pos.up(), end_pos, open_queue))
             return true;
 
+    return false;
+}
+
+
+bool MazeBoard::movePlayer(Coords start_pos, Coords end_pos, int id, int treasure)
+{
+    board[INDEX_C(end_pos)].player_slots[id] = board[INDEX_C(start_pos)].player_slots[id];
+    board[INDEX_C(start_pos)].player_slots[id] = nullptr;
+    *(board[INDEX_C(end_pos)].player_slots[id]) = end_pos;
+    if (board[INDEX_C(end_pos)].treasure == treasure)
+        return true;
     return false;
 }

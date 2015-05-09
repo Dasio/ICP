@@ -105,6 +105,9 @@ int Game::getPlayerScore(uint id)
 ////////////////////////////////////////// TODO
 bool Game::clickBoard(int x, int y)
 {
+    // check if coordinates are on the board
+    if (x <= 0 && x > labyrinth.getSize() && y <= 0 && y > labyrinth.getSize())
+        return false;
 
     if (next_action == SHIFT)
     {
@@ -116,7 +119,7 @@ bool Game::clickBoard(int x, int y)
     }
     else // next_action == MOVE
     {
-        if (movePlayer(x, y))
+        if (tryMovePlayer(x, y))
         {
             next_action = SHIFT;
             player_on_turn = (player_on_turn + 1) % players.size();
@@ -128,17 +131,18 @@ bool Game::clickBoard(int x, int y)
 }
 
 
-bool Game::movePlayer(int x, int y)
+bool Game::tryMovePlayer(int x, int y)
 {
     Player *act_player = &(players[player_on_turn]);
+    std::vector<Coords> available_moves;
 
-    if (labyrinth.checkPath(act_player->position, Coords(x,y)))
+    if (labyrinth.checkPath(act_player->position, Coords(x,y), available_moves))
     {
-        act_player->position.x = x;
-        act_player->position.y = y;
-
-        // set winner if there is any
-
+        if (labyrinth.movePlayer(act_player->position, Coords(x,y), player_on_turn, actualCard()))
+        {
+            if (++(act_player->score) == max_score)  // add score - check winner
+                winner = &(act_player->name);
+        }
         return true;
     }
     return false;

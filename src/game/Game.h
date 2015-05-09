@@ -67,7 +67,7 @@ private:
     void stateOfGame();
 
     // try to move player to the coordinates [x,y]
-    bool movePlayer(int x, int y);
+    bool tryMovePlayer(int x, int y);
 };
 
 

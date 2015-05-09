@@ -32,11 +32,14 @@ public:
     inline Stone getFreeStone() { return free_stone; }
     inline int getSize() { return board_size; }
 
-    // check if coordinates are correct
-    bool onBoard(Coords pos);
+    // check if position is on the board
+    inline bool onBoard(Coords pos);
 
     // check if there is possible path from start_pos to end_pos
-    bool checkPath(Coords start_pos, Coords end_pos);
+    bool checkPath(Coords start_pos, Coords end_pos, std::vector<Coords> &open_queue);
+
+    // move player - returns true if treasure was collectet (USE CAREFULLY)
+    bool movePlayer(Coords start_pos, Coords end_pos, int id, int treasure);
 
 
 private:
