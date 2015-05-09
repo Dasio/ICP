@@ -17,4 +17,31 @@
         <file>art/player3.png</file>
         <file>art/player4.png</file>
     </qresource>
+    <qresource prefix="/cards">
+        <file>art/ta.png</file>
+        <file>art/pudge.png</file>
+        <file>art/qop.png</file>
+        <file>art/storm.png</file>
+        <file>art/invoker.png</file>
+        <file>art/sf.png</file>
+        <file>art/wr.png</file>
+        <file>art/tinker.png</file>
+        <file>art/kunkka.png</file>
+        <file>art/ember.png</file>
+        <file>art/furion.png</file>
+        <file>art/zeus.png</file>
+        <file>art/magnus.png</file>
+        <file>art/puck.png</file>
+        <file>art/balanar.png</file>
+        <file>art/od.png</file>
+        <file>art/naix.png</file>
+        <file>art/silencer.png</file>
+        <file>art/tiny.png</file>
+        <file>art/leshrac.png</file>
+        <file>art/rubick.png</file>
+        <file>art/axe.png</file>
+        <file>art/viper.png</file>
+        <file>art/lina.png</file>
+        <file>art/_empty.png</file>
+    </qresource>
 </RCC>

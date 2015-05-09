@@ -70,6 +70,7 @@ private:
      */
     void createButtons();
     void loadStones();
+
     /**
      * @brief spawnPlayer
      * @param id
@@ -78,8 +79,18 @@ private:
      * @param x-offset
      */
     void spawnPlayer(int id, int x, int y, int off = 20);
+
+    /**
+     * @brief loadCardsImgs
+     */
+    void loadCardsImgs();
+
+    /**
+     * @brief drawCard
+     */
+    void drawCard();
+
     void drawFreeStone();
-    void movePlayer(int id, int x, int y);
 
     QPointF getCoords(int x, int y,bool right);
     std::vector<QPixmap> _playerSprite;
@@ -87,6 +98,7 @@ private:
     QGraphicsScene *scene;
     CustomView* _view;
     std::vector<QPixmap> _pathImg;
+    std::vector<QPixmap> _cardsImg;
     std::vector<QGraphicsPixmapItem*> playersPixmap;
     Game &gameLogic;
     std::vector<QPushButton*> _buttons;

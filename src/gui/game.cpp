@@ -3,6 +3,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsProxyWidget>
 #include <QDebug>
+#include <QDirIterator>
 
 GameGUI::GameGUI(QWidget *parent, Game &_gameLogic) :
     QDialog(parent),
@@ -17,8 +18,9 @@ GameGUI::GameGUI(QWidget *parent, Game &_gameLogic) :
     ui->gridLayout->addWidget(_view);
     setNames();
     loadStones();
+    loadCardsImgs();
     drawScene();
-    redrawScene();
+
 }
 GameGUI::~GameGUI()
 {
@@ -55,6 +57,15 @@ void GameGUI::loadPathImgs()
     _pathImg.push_back(QPixmap(":/path/art/three2.png"));
     _pathImg.push_back(QPixmap(":/path/art/three3.png"));
     _pathImg.push_back(QPixmap(":/path/art/three4.png"));
+}
+
+void GameGUI::loadCardsImgs()
+{
+    QDirIterator it(":/cards/art", QDirIterator::Subdirectories);
+    while (it.hasNext())
+    {
+        _cardsImg.push_back(QPixmap(it.next()));
+    }
 }
 
 void GameGUI::loadStones()
@@ -130,6 +141,7 @@ void GameGUI::drawScene()
                 }
         }
     drawFreeStone();
+    drawCard();
 }
 
 void GameGUI::drawFreeStone()
@@ -150,7 +162,16 @@ void GameGUI::drawFreeStone()
     rotateButton->setGeometry(x,pos.y()+55,50,20);
     rotateButton->setText("Rotate");
     QObject::connect(rotateButton, SIGNAL(clicked()), this, SLOT(rotateClicked()));
-    QGraphicsProxyWidget* proxyWidget = scene->addWidget(rotateButton);
+    scene->addWidget(rotateButton);
+}
+
+void GameGUI::drawCard()
+{
+    int N = gameLogic.labyrinth.getSize();
+    QPointF pos = getCoords(N,1,true);
+    QGraphicsPixmapItem *pm = scene->addPixmap(_cardsImg[gameLogic.actualCard()]);
+    pm->setPos(pos.x() + 90, pos.y());
+    pm->setScale(0.8);
 }
 
 void GameGUI::createButtons()
@@ -255,11 +276,7 @@ QPointF GameGUI::getCoords(int x, int y,bool right)
     return QPointF(a,b);
 }
 
-void GameGUI::movePlayer(int id,int x, int y)
-{
-    QPointF pos = getCoords(x,y,true);
-    playersPixmap[id]->setPos(pos.x() + 20,pos.y() + 10);
-}
+
 
 void GameGUI::clicked(QPointF pos)
 {
