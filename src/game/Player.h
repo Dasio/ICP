@@ -12,15 +12,7 @@
 #include "Stone.h"
 
 
-class Player
-{
-public:
-    std::string name;
-    int score;
-    Coords position;
 
-    Player(const std::string &player_name): name(player_name),score(0) {}
-};
 
 
 

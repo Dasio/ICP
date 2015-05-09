@@ -10,12 +10,24 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
 
-#include "Player.h"
 #include "MazeBoard.h"
 
 
+class Player
+{
+public:
+    std::string name;
+    int score;
+    Coords position;
+
+    Player(const std::string &player_name): name(player_name),score(0) {}
+};
+
+
 typedef enum {MOVE, SHIFT} Action;
+
 
 class Game
 {
@@ -28,6 +40,7 @@ public:
 
     // create new player - return his number or -1 if there are already 4 players
     int addPlayer(std::string name);
+
 
     std::string getPlayerName(uint id);
     int getPlayerScore(uint id);
@@ -51,6 +64,8 @@ public:
     bool saveGame(std::string file_name);
     bool loadGame(std::string file_name);
 
+    bool undo();
+
 private:
     // TODO: vector of DATA CONTAINERS (streams?) with game_state for UNDO
 
@@ -63,7 +78,7 @@ private:
 
     std::string *winner;
 
-    void stateOfGame();
+    void stateToStream(std::fstream &stream);
 
     // try to move player to the coordinates [x,y]
     bool tryMovePlayer(int x, int y);
