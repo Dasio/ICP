@@ -102,6 +102,7 @@ private:
     std::vector<QGraphicsPixmapItem*> playersPixmap;
     Game &gameLogic;
     std::vector<QPushButton*> _buttons;
+    QGraphicsPixmapItem *freeStone;
 
 
 
@@ -114,7 +115,6 @@ class CustomView : public QGraphicsView
 public:
     CustomView(GameGUI *game) : QGraphicsView(), _game(game)
     {
-        setMouseTracking(true);
     }
 private:
     GameGUI* _game;
