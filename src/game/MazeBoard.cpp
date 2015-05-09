@@ -341,6 +341,9 @@ bool MazeBoard::movePlayer(Coords start_pos, Coords end_pos, int id, int treasur
     board[INDEX_C(start_pos)].player_slots[id] = nullptr;
     *(board[INDEX_C(end_pos)].player_slots[id]) = end_pos;
     if (board[INDEX_C(end_pos)].treasure == treasure)
+    {
+        board[INDEX_C(end_pos)].treasure = 0;
         return true;
+    }
     return false;
 }
