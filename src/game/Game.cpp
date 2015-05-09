@@ -3,7 +3,7 @@
  * Peter Hostačný   (xhosta03)
  */
 
-//#include <iostream>
+#include <iostream>
 //static const char *shape[] = {"I", "L", "T"};
 
 
@@ -42,13 +42,14 @@ bool Game::initialize(int board_size, int treasure_count)
     std::vector<Coords> corner_positions (4);
     std::vector<Coords*> player_positions; // for passing pointer to player positions to the board
     corner_positions[0].x = 1;          corner_positions[0].y = 1;
-    corner_positions[0].x = 1;          corner_positions[0].y = board_size;
-    corner_positions[0].x = board_size; corner_positions[0].y = 1;
-    corner_positions[0].x = board_size; corner_positions[0].y = board_size;
+    corner_positions[1].x = 1;          corner_positions[1].y = board_size;
+    corner_positions[2].x = board_size; corner_positions[2].y = 1;
+    corner_positions[3].x = board_size; corner_positions[3].y = board_size;
     std::shuffle(std::begin(corner_positions), std::end(corner_positions), engine);
     for (uint x = 0; x < players.size(); x++)
     {
         players[x].position = corner_positions[x];
+        //std::cout << "[" << players[x].position.x << "," << players[x].position.y << "]" << std::endl;
         player_positions.push_back(&(players[x].position));
     }
 
