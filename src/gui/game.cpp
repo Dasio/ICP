@@ -13,13 +13,19 @@ GameGUI::GameGUI(QWidget *parent, Game &_gameLogic) :
 {
     playersPixmap.resize(4);
     ui->setupUi(this);
+    ui->player3_label->setVisible(false);
+    ui->player4_label->setVisible(false);
+    // Create view
     _view = new CustomView(this);
+    // Attach it to scene
     _view->setScene(scene);
+    // Add it to window
     ui->gridLayout->addWidget(_view);
     setNames();
     loadStones();
     loadCardsImgs();
     drawScene();
+    _view->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
 
 }
 GameGUI::~GameGUI()
@@ -30,19 +36,21 @@ GameGUI::~GameGUI()
 
 void GameGUI::setNames()
 {
-    // Get from API and check player count
+    ui->player1_label->setStyleSheet("QLabel { color : green; }");
+    ui->player2_label->setStyleSheet("QLabel { color : red; }");
+    ui->player3_label->setStyleSheet("QLabel { color : blue; }");
+    ui->player4_label->setStyleSheet("QLabel { color : yellow; }");
     ui->player1Name_label->setText(QString::fromStdString(gameLogic.getPlayerName(0)));
     ui->player2Name_label->setText(QString::fromStdString(gameLogic.getPlayerName(1)));
     int playersSize = gameLogic.getPlayersCount();
     switch(playersSize)
     {
         case 4:
-            ui->player4_label->setEnabled(true);
+            ui->player4_label->setVisible(true);
             ui->player4Name_label->setText(QString::fromStdString(gameLogic.getPlayerName(3)));
         case 3:
-            ui->player3_label->setEnabled(true);
+            ui->player3_label->setVisible(true);
             ui->player3Name_label->setText(QString::fromStdString(gameLogic.getPlayerName(2)));
-
     };
 }
 void GameGUI::loadPathImgs()
@@ -72,6 +80,7 @@ void GameGUI::loadStones()
 {
     loadPathImgs();
 }
+
 void GameGUI::redrawScene()
 {
     scene->clear();
@@ -79,15 +88,52 @@ void GameGUI::redrawScene()
     yPos.clear();
     drawScene();
 }
+void GameGUI::actualizeStatus()
+{
+    // Set who is on turn
+    QString activeStyle("QLabel { background-color : red}");
+    ui->player1Name_label->setStyleSheet("");
+    ui->player2Name_label->setStyleSheet("");
+    ui->player3Name_label->setStyleSheet("");
+    ui->player4Name_label->setStyleSheet("");
+    switch(gameLogic.activePlayer())
+    {
+        case 0:
+            ui->player1Name_label->setStyleSheet(activeStyle);
+            break;
+        case 1:
+            ui->player2Name_label->setStyleSheet(activeStyle);
+            break;
+        case 2:
+            ui->player3Name_label->setStyleSheet(activeStyle);
+            break;
+        case 3:
+            ui->player4Name_label->setStyleSheet(activeStyle);
+            break;
+    }
+    QString maxscore = QString::number(gameLogic.getMaxScore());
+    // Actualize score
+    ui->player1Score->setText(QString::number(gameLogic.getPlayerScore(0)) + "/" + maxscore);
+    ui->player2Score->setText(QString::number(gameLogic.getPlayerScore(1)) + "/" + maxscore);
+
+    int playersSize = gameLogic.getPlayersCount();
+    switch(playersSize)
+    {
+        case 4:
+            ui->player4Score->setText(QString::number(gameLogic.getPlayerScore(3)) + "/" + maxscore);
+        case 3:
+            ui->player3Score->setText(QString::number(gameLogic.getPlayerScore(2)) + "/" + maxscore);
+    };
+
+}
+
 void GameGUI::drawScene()
 {
+    actualizeStatus();
     int N = gameLogic.labyrinth.getSize();
     int playersCount = gameLogic.getPlayersCount();
+    // 64px stone, and 2px for space
     int size = 66;
-    if(N == 9)
-        _view->scale(0.9,0.9);
-    else if (N==11)
-        _view->scale(0.75,0.75);
     QGraphicsPixmapItem *pm;
     Stone stone;
     int imgX;
@@ -191,20 +237,6 @@ void GameGUI::drawCard()
     pm->setScale(0.8);
 }
 
-void GameGUI::createButtons()
-{
-    int N = gameLogic.labyrinth.getSize();
-    int i =0;
-    for(int x=2; x<=N; x+=2)
-    {
-        //QPoint coords = getCoords(x,0,false);
-        _buttons.push_back(new QPushButton);
-        _buttons[i]->setGeometry(QRect(QPoint(0,0),QSize(20,20)));
-        _buttons[i]->setText("v");
-        scene->addWidget(_buttons[i]);
-        i++;
-    }
-}
 
 int GameGUI::stoneToImgIndex(Stone &stone)
 {
@@ -214,7 +246,8 @@ int GameGUI::stoneToImgIndex(Stone &stone)
             switch(stone.rotation)
             {
                 case 0:
-                    return 0;
+                case 2:
+                    return 0;    
                 default:
                     return 1;
             }
@@ -331,3 +364,33 @@ void CustomView::mousePressEvent(QMouseEvent *event)
 
 }
 
+
+void GameGUI::on_saveButton_clicked()
+{
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::AnyFile);
+    QString fileName;
+    if(dialog.exec())
+        fileName = dialog.selectedFiles()[0];
+    // If no file was chosen, nothing happens
+    if(!fileName.isEmpty())
+    {
+        gameLogic.saveGame(fileName.toStdString());
+        QMessageBox msgBox(this);
+        msgBox.setText("Successfully saved");
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.exec();
+    }
+    else
+    {
+        QMessageBox msgBox(this);
+        msgBox.setText("Failed to save. You have to choose file name");
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.exec();
+    }
+}
+
+void GameGUI::on_undoButton_clicked()
+{
+    qDebug() << "undo";
+}

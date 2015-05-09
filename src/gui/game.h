@@ -2,6 +2,7 @@
 #define GAMEGUI_H
 
 #include <QDialog>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QGraphicsObject>
 #include <QGraphicsScene>
@@ -10,8 +11,10 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <boost/bimap.hpp>
+#include <QFileDialog>
 #include "../src/game/Game.h"
 
+#define PLAYER_LABEL
 namespace Ui {
 class Game;
 }
@@ -31,6 +34,11 @@ public:
     QPushButton* rotateButton;
 public slots:
     void rotateClicked();
+
+private slots:
+    void on_saveButton_clicked();
+
+    void on_undoButton_clicked();
 
 private:
     struct pos{
@@ -66,9 +74,8 @@ private:
     int stoneToImgIndex(Stone &stone);
 
     /**
-     * @brief createButtons
+     * @brief loadStones
      */
-    void createButtons();
     void loadStones();
 
     /**
@@ -89,6 +96,11 @@ private:
      * @brief drawCard
      */
     void drawCard();
+
+    /**
+     * @brief Hightlight who is on turn
+     */
+    void actualizeStatus();
 
     void drawFreeStone();
 
