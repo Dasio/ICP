@@ -65,7 +65,15 @@ bool Game::initialize(int board_size, int treasure_count)
         return false;
 
     next_action = SHIFT;
+    player_on_turn = 0;
+
+////////////////////////////////////////////////////////////////////////
+    movePlayer(2, 2);
+
+
     return true;
+
+
 }
 
 
@@ -124,9 +132,21 @@ bool Game::clickBoard(int x, int y)
 
 bool Game::movePlayer(int x, int y)
 {
+    Player *act_player = &(players[player_on_turn]);
 
-    players[player_on_turn].position.x = x;
-    players[player_on_turn].position.y = y;
+    std::vector<Coords> available_moves {act_player->position};
+
+    //labyrinth.makePath(available_moves);
+
+    std::cout << available_moves.size() << std::endl;
+
+
+
+
+    //act_player->position
+
+    act_player->position.x = x;
+    act_player->position.y = y;
 
     return true;
 }

@@ -18,6 +18,8 @@ public:
     {
         return (x == other.x && y == other.y);
     }
+    Coords() = default;
+    Coords(const int _x, const int _y) : x(_x), y(_y) {}
 };
 
 typedef enum {I, L, T} StoneType;
@@ -35,7 +37,7 @@ public:
 
     bool canGo(Direction dir);
 
-    Stone() = default;
+    Stone() : type(I), rotation(0), treasure(0), player_slots{0} {};
     Stone(const StoneType new_type, const int rot=0)
         : type(new_type), rotation(rot), treasure(0), player_slots{0} {}
 };

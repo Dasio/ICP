@@ -41,6 +41,9 @@ public:
     // returns 0 if pack is empty
     int actualCard();
 
+    inline int activePlayer() { return player_on_turn; }
+    inline Action nextAction() { return next_action; }
+
     // save or load game
     bool saveGame(std::string file_name);
     bool loadGame(std::string file_name);
@@ -55,7 +58,6 @@ private:
     int player_on_turn;
     Action next_action;
 
-    //void shuffleCards();
     void stateOfGame();
 
     // try to move player to the coordinates [x,y]
