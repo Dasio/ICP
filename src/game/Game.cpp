@@ -3,6 +3,10 @@
  * Peter Hostačný   (xhosta03)
  */
 
+//#include <iostream>
+//static const char *shape[] = {"I", "L", "T"};
+
+
 #include <fstream>
 #include <algorithm>
 #include <random>
@@ -49,7 +53,13 @@ bool Game::initialize(int board_size, int treasure_count)
     for (uint x = players.size(); x < 4; x++) { corner_positions.pop_back(); }
 
     // initialize game_board and insert players to the stones
-    labyrinth.initialize(board_size, treasure_count, corner_positions);
+    labyrinth.initialize(board_size);
+
+    if (!labyrinth.addTreasures(treasure_count))
+        return false;
+
+    if (!labyrinth.addPlayers(corner_positions))
+        return false;
 
     return true;
 }

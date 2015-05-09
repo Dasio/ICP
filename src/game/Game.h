@@ -34,6 +34,7 @@ public:
     MazeBoard labyrinth;
 
     // initialize board, fill with stones, with treasures and randomize players positions
+    // there must be minimum of 4 players in the game
     bool initialize(int board_size = 7, int treasure_count = 12);
 
     // create new player - return his number or -1 if there are already 4 players

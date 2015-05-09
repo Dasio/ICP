@@ -4,7 +4,7 @@
  */
 
 
-#include <iostream>
+//#include <iostream>
 
 #include <algorithm>
 #include <random>
@@ -44,7 +44,7 @@ static inline bool is_corner(int x, int y, int board_size)
 }
 
 
-void MazeBoard::initialize(int _board_size, int treasure_count, std::vector<Coords> &players_positions)
+void MazeBoard::initialize(int _board_size)
 {
     board_size = _board_size; // adding board_size to class variable
 
@@ -74,7 +74,7 @@ void MazeBoard::initialize(int _board_size, int treasure_count, std::vector<Coor
             else if (y == 1)          (board[INDEX(x,y)]).rotation = 3; // first column
             else if (y == board_size) (board[INDEX(x,y)]).rotation = 1; // last column
             (ratio[T])++;
-            std::cout << "ratio.. I: " << ratio[I] << " L: " << ratio[L] << " T: " << ratio[T] << std::endl;
+            //std::cout << "ratio.. I: " << ratio[I] << " L: " << ratio[L] << " T: " << ratio[T] << std::endl;
         }
     }
 
@@ -94,7 +94,7 @@ void MazeBoard::initialize(int _board_size, int treasure_count, std::vector<Coor
 
     // shuffle remaining stones
     auto engine = std::default_random_engine{};
-    std::shuffle(std::begin(board), std::end(board), engine);
+    std::shuffle(std::begin(temp_board), std::end(temp_board), engine);
 
     // adding remaining stones to the even rows (N/2)*N
     for (int x = 2; x <= board_size; x+=2)
@@ -116,12 +116,14 @@ void MazeBoard::initialize(int _board_size, int treasure_count, std::vector<Coor
         }
     }
 
-    addTreasures(treasure_count);
     free_stone.type = minimum(ratio);
 }
 
-void MazeBoard::addTreasures(int treasure_count)
+bool MazeBoard::addTreasures(int treasure_count)
 {
+    if (board_size == 0)
+        return false;
+
     std::vector<int> temp_coords; //board.size() - 4
 
     for (int x = 1; x <= board_size; x++)
@@ -138,10 +140,26 @@ void MazeBoard::addTreasures(int treasure_count)
     auto engine = std::default_random_engine{};
     std::shuffle(std::begin(temp_coords), std::end(temp_coords), engine);
 
-    for (int x = 1; x <= treasure_count; x++)
+    // fill first 'treasure_count' coordinates with treasures
+    for (int x = 0; x < treasure_count; x++)
     {
-        board[temp_coords[x]].treasure = x;
+        // treasures are numbered from 1
+        board[temp_coords[x]].treasure = x + 1;
     }
+    return true;
+}
+
+
+bool MazeBoard::addPlayers(std::vector<Coords> &player_positions)
+{
+    if (board_size == 0)
+        return false;
+
+    for (uint x = 0; x < player_positions.size(); x++)
+    {
+        //board[INDEX(player_positions[x])] player_positions[x]
+    }
+    return true;
 }
 
 

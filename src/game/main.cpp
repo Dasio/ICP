@@ -11,13 +11,14 @@
 
 int main(/*int argc, char *argv[]*/)
 {
-    std::cout << "Game" << std::endl;
+
 
     Game game;
 
     game.addPlayer("Player1");
     game.addPlayer("Player2");
 
-    game.initialize();
+    if (game.initialize())
+        std::cout << "Game" << std::endl;
 
 }

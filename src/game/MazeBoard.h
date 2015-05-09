@@ -13,6 +13,9 @@
 
 
 // get index to vector from board coordinates
+//#define GET_MACRO(_1,_2,_3,NAME,...) NAME
+//#define FOO(...) GET_MACRO(__VA_ARGS__, FOO3, FOO2)(__VA_ARGS__)
+
 #define INDEX(x,y) ((x-1) * board_size + (y-1))
 
 
@@ -27,10 +30,13 @@ private:
     Stone free_stone;
     Coords forbidden_shift; // for blocking reverse shift in the next turn
 
-    void addTreasures(int treasure_count);
+
 
 public:
-    void initialize(int board_size, int treasure_count, std::vector<Coords> &players_positions);
+    void initialize(int board_size);
+    bool addTreasures(int treasure_count);
+    bool addPlayers(std::vector<Coords> &player_positions);
+
     bool shift(int x, int y);
     void rotateFreeStone();
 

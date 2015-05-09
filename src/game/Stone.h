@@ -31,6 +31,8 @@ public:
     int rotation;    // rotation clockwise (0 = 0°, 1 = 90°, 2 = 180°, 3 = 270°)
     int treasure;
 
+    Coords* player_slots[4]; // max. 4 players on the stone
+
     bool canGo(Direction dir);
 
     Stone() = default;
