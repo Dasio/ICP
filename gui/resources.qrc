@@ -12,6 +12,9 @@
         <file>art/vertical.png</file>
     </qresource>
     <qresource prefix="/player">
-        <file>art/down_stand.png</file>
+        <file>art/player1.png</file>
+        <file>art/player2.png</file>
+        <file>art/player3.png</file>
+        <file>art/player4.png</file>
     </qresource>
 </RCC>

@@ -2,6 +2,7 @@
 #define GAMEGUI_H
 
 #include <QDialog>
+#include <QPushButton>
 #include <QGraphicsObject>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -24,7 +25,7 @@ class GameGUI : public QDialog
 public:
     explicit GameGUI(QWidget *parent, Game &_gameLogic);
     ~GameGUI();
-    void clicked(QPointF pos);
+    void clicked(QPoint pos);
     boost::bimap<int, int> xPos;
     boost::bimap<int, int> yPos;
 
@@ -40,9 +41,9 @@ private:
     void setNames();
 
     /**
-     * @brief Draw stones to graphics view
+     * @brief Draw scene to graphics view
      */
-    void drawStones();
+    void drawScene();
 
     /**
      * @brief Load images for path in vector
@@ -56,19 +57,32 @@ private:
      */
     int stoneToImgIndex(Stone &stone);
 
-    void spawnPlayer();
-    void movePlayer(int x, int y);
+    /**
+     * @brief createButtons
+     */
+    void createButtons();
+    void loadStones();
+    /**
+     * @brief spawnPlayer
+     * @param id
+     * @param x
+     * @param y
+     * @param x-offset
+     */
+    void spawnPlayer(int id, int x, int y, int off = 20);
+    void movePlayer(int id, int x, int y);
     const unsigned int playerHeight = 70;
     const unsigned int playerWidth = 45;
     const unsigned int playerSpace = 20;
-    QPointF getCoords(int x, int y);
+    QPoint getCoords(int x, int y,bool right);
     std::vector<QPixmap> _playerSprite;
     Ui::Game *ui;
     QGraphicsScene *scene;
     CustomView* _view;
     std::vector<QPixmap> _pathImg;
-    QGraphicsPixmapItem *player1Pixmap;
+    std::vector<QGraphicsPixmapItem*> playersPixmap;
     Game &gameLogic;
+    std::vector<QPushButton*> _buttons;
 
 
 };

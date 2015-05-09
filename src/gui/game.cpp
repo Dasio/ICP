@@ -10,24 +10,16 @@ GameGUI::GameGUI(QWidget *parent, Game &_gameLogic) :
     scene(new QGraphicsScene(this)),
     gameLogic(_gameLogic)
 {
-
+    playersPixmap.resize(4);
     ui->setupUi(this);
     CustomView *view = new CustomView(this);
     view->setScene(scene);
     ui->gridLayout->addWidget(view);
     setNames();
-    loadPathImgs();
-    drawStones();
-    spawnPlayer();
-    /*QPixmap player(":/player/art/down_stand.png");
-    QBitmap mask(player.createMaskFromColor(QColor(255,255,255), Qt::MaskOutColor));
-
-        QPainter paint(&player);
-        paint.setPen(QColor(0,0,0));
-        paint.drawPixmap(player.rect(), mask, mask.rect());
-        paint.end();
-    QGraphicsPixmapItem *pm = scene->addPixmap(player);
-    pm->setPos(60,-70);*/
+    loadStones();
+    drawScene();
+    //createButtons();
+   // spawnPlayer(2,2,3);
 }
 GameGUI::~GameGUI()
 {
@@ -66,10 +58,15 @@ void GameGUI::loadPathImgs()
     _pathImg.push_back(QPixmap(":/path/art/three4.png"));
 }
 
+void GameGUI::loadStones()
+{
+    loadPathImgs();
+}
 
-void GameGUI::drawStones()
+void GameGUI::drawScene()
 {
     int N = gameLogic.labyrinth.getSize();
+    int playersCount = gameLogic.getPlayersCount();
     int size = 66;
     if(N == 9)
         _view->scale(0.9,0.9);
@@ -79,19 +76,70 @@ void GameGUI::drawStones()
     Stone stone;
     int imgX;
     int imgY;
+    int playersOnStone;
     for(int y=1;y<=N;y++)
         for(int x=1;x<=N;x++)
         {
-            stone = gameLogic.labyrinth.get(x,y);
-            qDebug() << stone.type << " " << stone.rotation;
+            // Get stone from board
+            stone = gameLogic.labyrinth.get(y,x);
+            //qDebug() << x << ":" << y << " = " << stone.type << ":" << stone.rotation;
             pm = scene->addPixmap(_pathImg[stoneToImgIndex(stone)]);
             imgX = x * size;
             imgY = y * size;
+            // Bimap for maping real position and grid position
             xPos.insert(boost::bimap<int,int>::value_type(imgX,x));
             yPos.insert(boost::bimap<int,int>::value_type(imgY,y));
+            // Move it to right position
             pm->setPos(imgX,imgY);
+            // Spawn players
+            playersOnStone = 0;
+            // First check how many they are there
+            for(int i=0;i<playersCount;i++)
+                if(stone.player_slots[i] != nullptr)
+                    playersOnStone++;
+            int begin,size;
+            switch(playersOnStone)
+            {
+                case 4:
+                    begin=-2;
+                    size = 13;
+                    break;
+                case 3:
+                    begin=5;
+                    size = 15;
+                    break;
+                case 2:
+                    begin = 8;
+                    size = 22;
+                    break;
+                default:
+                    begin = 20;
+                    size = 0;
+            }
+            // Draw them
+            for(int i=0,j=0;i<playersCount;i++)
+                if(stone.player_slots[i] != nullptr)
+                {
+                    spawnPlayer(i+1,x,y,begin+j*size);
+                    j++;
+                }
         }
 }
+void GameGUI::createButtons()
+{
+    int N = gameLogic.labyrinth.getSize();
+    int i =0;
+    for(int x=2; x<=N; x+=2)
+    {
+        //QPoint coords = getCoords(x,0,false);
+        _buttons.push_back(new QPushButton);
+        _buttons[i]->setGeometry(QRect(QPoint(0,0),QSize(20,20)));
+        _buttons[i]->setText("v");
+        scene->addWidget(_buttons[i]);
+        i++;
+    }
+}
+
 int GameGUI::stoneToImgIndex(Stone &stone)
 {
     switch(stone.type)
@@ -133,31 +181,62 @@ int GameGUI::stoneToImgIndex(Stone &stone)
     return 0;
 }
 
-void GameGUI::spawnPlayer()
+void GameGUI::spawnPlayer(int id, int x, int y, int off)
 {
-    QPixmap player(":/player/art/down_stand.png");
+    QPixmap player;
+    switch(id)
+    {
+        case 1:
+            player.load(":/player/art/player1.png");
+            break;
+        case 2:
+            player.load(":/player/art/player2.png");
+            break;
+        case 3:
+            player.load(":/player/art/player3.png");
+            break;
+        case 4:
+            player.load(":/player/art/player4.png");
+            break;
+        default:
+            player.load(":/player/art/player1.png");
+
+    }
+
     player.setDevicePixelRatio(1.5);
-    player1Pixmap = scene->addPixmap(player);
-    QPointF pos = getCoords(3,2);
-    player1Pixmap->setPos(pos.x() + 20,pos.y() + 10);
+    playersPixmap[id-1] = scene->addPixmap(player);
+    QPointF pos = getCoords(x,y,true);
+    playersPixmap[id-1]->setPos(pos.x() + off,pos.y() + 10);
 }
 
-QPointF GameGUI::getCoords(int x, int y)
+QPoint GameGUI::getCoords(int x, int y,bool right)
 {
-    int a = xPos.right.at(x);
-    int b = yPos.right.at(y);
-    return QPointF(a,b);
+    int a,b;
+    if(right)
+    {
+        a = xPos.right.at(x);
+        b = yPos.right.at(y);
+    }
+    else
+    {
+        a = xPos.left.at(x);
+        b = yPos.left.at(y);
+    }
+
+    return QPoint(a,b);
 }
 
-void GameGUI::movePlayer(int x, int y)
+void GameGUI::movePlayer(int id,int x, int y)
 {
-    QPointF pos = getCoords(x,y);
-    player1Pixmap->setPos(pos.x() + 20,pos.y() + 10);
+    QPoint pos = getCoords(x,y,true);
+    playersPixmap[id]->setPos(pos.x() + 20,pos.y() + 10);
 }
 
-void GameGUI::clicked(QPointF pos)
+void GameGUI::clicked(QPoint pos)
 {
-    player1Pixmap->setPos(pos.x() + 20,pos.y() + 10);
+    //player1Pixmap->setPos(pos.x() + 20,pos.y() + 10);
+    QPoint newpos = getCoords(pos.x(),pos.y(),false);
+    movePlayer(0,newpos.x(),newpos.y());
 }
 
 
@@ -169,7 +248,7 @@ void CustomView::mousePressEvent(QMouseEvent *event)
     {
         item = _items.last();
         //qDebug() << _game->xPos.left.at(item->pos().x()) << ":" << _game->xPos.left.at(item->pos().y());
-        _game->clicked(item->pos());
+        _game->clicked(item->pos().toPoint());
 
     }
     else
