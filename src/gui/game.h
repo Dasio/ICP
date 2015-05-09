@@ -49,6 +49,13 @@ private:
      */
     void loadPathImgs();
 
+    /**
+     * @brief stoneToImgIndex
+     * @param stone
+     * @return correspoindg index to path img vector
+     */
+    int stoneToImgIndex(Stone &stone);
+
     void spawnPlayer();
     void movePlayer(int x, int y);
     const unsigned int playerHeight = 70;

@@ -38,17 +38,17 @@ GameGUI::~GameGUI()
 void GameGUI::setNames()
 {
     // Get from API and check player count
-    ui->player1Name_label->setText(QString::fromStdString(gameLogic.getPlayer(0)->getName()));
-    ui->player2Name_label->setText(QString::fromStdString(gameLogic.getPlayer(1)->getName()));
+    ui->player1Name_label->setText(QString::fromStdString(gameLogic.getPlayerName(0)));
+    ui->player2Name_label->setText(QString::fromStdString(gameLogic.getPlayerName(1)));
     int playersSize = gameLogic.getPlayersCount();
     switch(playersSize)
     {
         case 4:
             ui->player4_label->setEnabled(true);
-            ui->player4Name_label->setText(QString::fromStdString(gameLogic.getPlayer(3)->getName()));
+            ui->player4Name_label->setText(QString::fromStdString(gameLogic.getPlayerName(3)));
         case 3:
             ui->player3_label->setEnabled(true);
-            ui->player3Name_label->setText(QString::fromStdString(gameLogic.getPlayer(2)->getName()));
+            ui->player3Name_label->setText(QString::fromStdString(gameLogic.getPlayerName(2)));
 
     };
 }
@@ -69,30 +69,68 @@ void GameGUI::loadPathImgs()
 
 void GameGUI::drawStones()
 {
-    std::vector<pos> stones;
     int N = gameLogic.labyrinth.getSize();
     int size = 66;
-    int r;
     if(N == 9)
         _view->scale(0.9,0.9);
     else if (N==11)
         _view->scale(0.75,0.75);
     QGraphicsPixmapItem *pm;
-    for(int y=0;y<N;y++)
-        for(int x=0;x<N;x++)
+    Stone stone;
+    int imgX;
+    int imgY;
+    for(int y=1;y<=N;y++)
+        for(int x=1;x<=N;x++)
         {
-            stones.push_back(pos(x,y));
+            stone = gameLogic.labyrinth.get(x,y);
+            qDebug() << stone.type << " " << stone.rotation;
+            pm = scene->addPixmap(_pathImg[stoneToImgIndex(stone)]);
+            imgX = x * size;
+            imgY = y * size;
+            xPos.insert(boost::bimap<int,int>::value_type(imgX,x));
+            yPos.insert(boost::bimap<int,int>::value_type(imgY,y));
+            pm->setPos(imgX,imgY);
         }
-    for(auto stone: stones)
+}
+int GameGUI::stoneToImgIndex(Stone &stone)
+{
+    switch(stone.type)
     {
-        r = qrand() % _pathImg.size();
-        pm = scene->addPixmap(_pathImg[r]);
-        int x = stone.x * size;
-        int y = stone.y * size;
-        xPos.insert(boost::bimap<int,int>::value_type(x,stone.x));
-        yPos.insert(boost::bimap<int,int>::value_type(y,stone.y));
-        pm->setPos(x,y);
+        case I:
+            switch(stone.rotation)
+            {
+                case 0:
+                    return 0;
+                default:
+                    return 1;
+            }
+        case L:
+            switch(stone.rotation)
+            {
+                case 0:
+                    return 5;
+                case 1:
+                    return 2;
+                case 2:
+                    return 3;
+                case 3:
+                    return 4;
+
+            }
+        case T:
+            switch(stone.rotation)
+            {
+                case 0:
+                    return 6;
+                case 1:
+                    return 7;
+                case 2:
+                    return 8;
+                case 3:
+                    return 9;
+            }
     }
+    return 0;
 }
 
 void GameGUI::spawnPlayer()

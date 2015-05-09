@@ -29,9 +29,11 @@ void MainWindow::on_createGameButton_clicked()
         gameLogic.addPlayer(ui->player4Name->text().toStdString());
     int mapSize = ui->sizeBox->currentText().toInt();
     qDebug() << mapSize;
-    gameLogic.initialize(mapSize);
-    hide();
-    GameGUI gameGUI(this,gameLogic);
-    gameGUI.exec();
-    close();
+    if(gameLogic.initialize(mapSize))
+    {
+        hide();
+        GameGUI gameGUI(this,gameLogic);
+        gameGUI.exec();
+        close();
+    }
 }
