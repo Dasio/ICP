@@ -150,14 +150,14 @@ bool MazeBoard::addTreasures(int treasure_count)
 }
 
 
-bool MazeBoard::addPlayers(std::vector<Coords> &player_positions)
+bool MazeBoard::addPlayers(std::vector<Coords*> &player_positions)
 {
     if (board_size == 0)
         return false;
 
     for (uint x = 0; x < player_positions.size(); x++)
     {
-        //board[INDEX(player_positions[x])] player_positions[x]
+        board[INDEX_1(*(player_positions[x]))].player_slots[x] = player_positions[x];
     }
     return true;
 }

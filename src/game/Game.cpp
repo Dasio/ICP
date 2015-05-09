@@ -40,6 +40,7 @@ bool Game::initialize(int board_size, int treasure_count)
 
     // initialize players positions
     std::vector<Coords> corner_positions (4);
+    std::vector<Coords*> player_positions; // for passing pointer to player positions to the board
     corner_positions[0].x = 1;          corner_positions[0].y = 1;
     corner_positions[0].x = 1;          corner_positions[0].y = board_size;
     corner_positions[0].x = board_size; corner_positions[0].y = 1;
@@ -48,9 +49,8 @@ bool Game::initialize(int board_size, int treasure_count)
     for (uint x = 0; x < players.size(); x++)
     {
         players[x].position = corner_positions[x];
+        player_positions.push_back(&(players[x].position));
     }
-    // remove unused corner positions
-    for (uint x = players.size(); x < 4; x++) { corner_positions.pop_back(); }
 
     // initialize game_board and insert players to the stones
     labyrinth.initialize(board_size);
@@ -58,7 +58,7 @@ bool Game::initialize(int board_size, int treasure_count)
     if (!labyrinth.addTreasures(treasure_count))
         return false;
 
-    if (!labyrinth.addPlayers(corner_positions))
+    if (!labyrinth.addPlayers(player_positions))
         return false;
 
     return true;

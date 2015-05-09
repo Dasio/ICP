@@ -13,10 +13,8 @@
 
 
 // get index to vector from board coordinates
-//#define GET_MACRO(_1,_2,_3,NAME,...) NAME
-//#define FOO(...) GET_MACRO(__VA_ARGS__, FOO3, FOO2)(__VA_ARGS__)
-
 #define INDEX(x,y) ((x-1) * board_size + (y-1))
+#define INDEX_1(coord) (((coord).x-1) * board_size + ((coord).y-1))
 
 
 
@@ -35,7 +33,7 @@ private:
 public:
     void initialize(int board_size);
     bool addTreasures(int treasure_count);
-    bool addPlayers(std::vector<Coords> &player_positions);
+    bool addPlayers(std::vector<Coords*> &player_positions);
 
     bool shift(int x, int y);
     void rotateFreeStone();
