@@ -107,6 +107,13 @@ void GameGUI::drawScene()
             yPos.insert(boost::bimap<int,int>::value_type(imgY,y));
             // Move it to right position
             pm->setPos(imgX,imgY);
+
+            if(stone.treasure)
+            {
+                pm = scene->addPixmap(_cardsImg[stone.treasure]);
+                pm->setScale(0.35);
+                pm->setPos(imgX+10,imgY+17);
+            }
             // Spawn players
             playersOnStone = 0;
             // First check how many they are there
@@ -156,6 +163,13 @@ void GameGUI::drawFreeStone()
     yPos.insert(boost::bimap<int,int>::value_type(pos.y(),-1));
     // Move it to right position
     freeStone->setPos(x,pos.y());
+    QGraphicsPixmapItem *pm;
+    if(stone.treasure)
+    {
+        pm = scene->addPixmap(_cardsImg[stone.treasure]);
+        pm->setScale(0.35);
+        pm->setPos(x+10,pos.y()+17);
+    }
     // Create button for rotation
     rotateButton = new QPushButton();
     //but->setGeometry(QRect(QPoint(x,pos.y()),QSize(50,30)));
@@ -170,7 +184,10 @@ void GameGUI::drawCard()
     int N = gameLogic.labyrinth.getSize();
     QPointF pos = getCoords(N,1,true);
     QGraphicsPixmapItem *pm = scene->addPixmap(_cardsImg[gameLogic.actualCard()]);
-    pm->setPos(pos.x() + 90, pos.y());
+    int x = pos.x() + 90;
+    xPos.insert(boost::bimap<int,int>::value_type(x,-2));
+    yPos.insert(boost::bimap<int,int>::value_type(pos.y(),-2));
+    pm->setPos(x, pos.y());
     pm->setScale(0.8);
 }
 
@@ -283,6 +300,8 @@ void GameGUI::clicked(QPointF pos)
     QPointF rpos = getCoords(pos.x(),pos.y(),false);
     if(rpos.x() == -1)
         qDebug() << "Free stone";
+    else if(rpos.x() == -2)
+        qDebug() << "Card";
     else
         gameLogic.clickBoard(rpos.y(),rpos.x());
     qDebug() << rpos.x() << ":" << rpos.y();
