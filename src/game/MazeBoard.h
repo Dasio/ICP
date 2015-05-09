@@ -30,13 +30,13 @@ private:
     void addTreasures(int treasure_count);
 
 public:
-    void initialize(int board_size, int treasure_count);
+    void initialize(int board_size, int treasure_count, std::vector<Coords> &players_positions);
     bool shift(int x, int y);
     void rotateFreeStone();
 
-    inline Stone get(int x, int y);
-    inline Stone getFreeStone();
-    inline int getSize();
+    inline Stone get(int x, int y) { return board[INDEX(x,y)]; }
+    inline Stone getFreeStone() { return free_stone; }
+    inline int getSize() { return board_size; }
 
 };
 

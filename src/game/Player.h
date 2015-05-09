@@ -14,21 +14,12 @@
 
 class Player
 {
-private:
+public:
     std::string name;
     int score;
-
-public:
     Coords position;
 
-    inline std::string getName() {return name;};
-    inline int getScore() {return score;};
-
-    Player(std::string player_name)
-    {
-        name = player_name;
-        score = 0;
-    }
+    Player(const std::string &player_name): name(player_name),score(0) {}
 };
 
 

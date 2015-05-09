@@ -44,8 +44,10 @@ static inline bool is_corner(int x, int y, int board_size)
 }
 
 
-void MazeBoard::initialize(int board_size, int treasure_count)
+void MazeBoard::initialize(int _board_size, int treasure_count, std::vector<Coords> &players_positions)
 {
+    board_size = _board_size; // adding board_size to class variable
+
     /* initialize random seed: */
     srand(time(NULL));
 
@@ -90,6 +92,7 @@ void MazeBoard::initialize(int board_size, int treasure_count)
         //std::cout << "ratio.. I: " << ratio[I] << " L: " << ratio[L] << " T: " << ratio[T] << std::endl;
     }
 
+    // shuffle remaining stones
     auto engine = std::default_random_engine{};
     std::shuffle(std::begin(board), std::end(board), engine);
 
@@ -130,7 +133,15 @@ void MazeBoard::addTreasures(int treasure_count)
             temp_coords.push_back(INDEX(x,y));
         }
     }
-    treasure_count = treasure_count;
+
+    // shuffle coordinates where treasures will be placed in
+    auto engine = std::default_random_engine{};
+    std::shuffle(std::begin(temp_coords), std::end(temp_coords), engine);
+
+    for (int x = 1; x <= treasure_count; x++)
+    {
+        board[temp_coords[x]].treasure = x;
+    }
 }
 
 
@@ -165,24 +176,4 @@ bool MazeBoard::shift(int x, int y)
 void MazeBoard::rotateFreeStone()
 {
     free_stone.rotation = (free_stone.rotation + 1) % 4;
-}
-
-
-
-inline Stone MazeBoard::get(int x, int y)
-{
-    return board[INDEX(x,y)];
-}
-
-
-inline Stone MazeBoard::getFreeStone()
-{
-    return free_stone;
-}
-
-
-
-inline int MazeBoard::getSize()
-{
-    return board_size;
 }

@@ -3,13 +3,6 @@
  * Peter Hostačný   (xhosta03)
  */
 
- /*
-
-- pocet kamenov: N*N+1 (staticka premenna v Game)
-- pocet kariet/predmetov: 12, 24 (impl 12) (staticka premenna v Game)
-
- */
-
 
 
 #ifndef GAME_H
@@ -46,13 +39,18 @@ public:
     // create new player - return his number or -1 if there are already 4 players
     int addPlayer(std::string name);
 
+    std::string getPlayerName(uint id);
+
+    inline int getPlayersCount() { return players.size(); }
+
     // change player_on_turn to the next player
-    inline void nextPlayer();
+    void nextPlayer();
 
     bool movePlayer();
 
     // return int representing the treasure on the top of card_pack
-    inline int actualCard();
+    // returns 0 if pack is empty
+    int actualCard();
 
     // save or load game
     bool saveGame(std::string file_name);

@@ -34,9 +34,6 @@ bool Game::initialize(int board_size, int treasure_count)
     auto engine = std::default_random_engine{};
     std::shuffle(std::begin(card_pack), std::end(card_pack), engine);
 
-    // initialize game_board
-    labyrinth.initialize(board_size, treasure_count);
-
     // initialize players positions
     std::vector<Coords> corner_positions (4);
     corner_positions[0].x = 1;          corner_positions[0].y = 1;
@@ -47,8 +44,12 @@ bool Game::initialize(int board_size, int treasure_count)
     for (uint x = 0; x < players.size(); x++)
     {
         players[x].position = corner_positions[x];
-        corner_positions.pop_back();
     }
+    // remove unused corner positions
+    for (uint x = players.size(); x < 4; x++) { corner_positions.pop_back(); }
+
+    // initialize game_board and insert players to the stones
+    labyrinth.initialize(board_size, treasure_count, corner_positions);
 
     return true;
 }
@@ -65,16 +66,36 @@ int Game::addPlayer(std::string name)
     return -1;
 }
 
+std::string Game::getPlayerName(uint id)
+{
+    if (id < players.size())
+        return players[id].name;
+    return std::string();
+}
 
-inline void Game::nextPlayer()
+
+void Game::nextPlayer()
 {
     player_on_turn = (player_on_turn + 1) % players.size();
 }
 
 
-inline int Game::actualCard()
+//////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////// TODO
+bool Game::movePlayer()
 {
-    return card_pack.back();
+    return true;
+}
+
+
+
+
+int Game::actualCard()
+{
+    if (!card_pack.empty())
+        return card_pack.back();
+    else
+        return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -83,6 +104,11 @@ bool Game::saveGame(std::string file_name)
 {
     std::ofstream outfile (file_name, std::ofstream::binary);
 
+    if (outfile.is_open())
+    {
+        outfile.close();
+    }
+
     return true;
 }
 
@@ -90,7 +116,12 @@ bool Game::saveGame(std::string file_name)
 ////////////////////////////////////////// TODO
 bool Game::loadGame(std::string file_name)
 {
-    std::ifstream outfile (file_name, std::ofstream::binary);
+    std::ifstream infile (file_name, std::ofstream::binary);
+
+    if (infile.is_open())
+    {
+        infile.close();
+    }
 
     return true;
 }
