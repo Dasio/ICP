@@ -184,7 +184,7 @@ bool Game::loadGame(std::string file_name)
         infile.close();
     }
 
-    return true;
+    return false;
 }
 
 

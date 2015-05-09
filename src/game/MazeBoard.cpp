@@ -324,7 +324,6 @@ static inline bool notInQueue(Coords position, std::vector<Coords> &open_queue)
 // RECURSION
 bool MazeBoard::checkPath(Coords start_pos, Coords end_pos, std::vector<Coords> &open_queue)
 {
-    std::cout << "start: [" << start_pos.x << "," << start_pos.y << "]" << std::endl;
     if (start_pos == end_pos)
         return true;
     open_queue.push_back(start_pos);
@@ -358,7 +357,8 @@ bool MazeBoard::checkPath(Coords start_pos, Coords end_pos, std::vector<Coords> 
 bool MazeBoard::movePlayer(Coords start_pos, Coords end_pos, int id, int treasure)
 {
     board[INDEX_C(end_pos)].player_slots[id] = board[INDEX_C(start_pos)].player_slots[id];
-    board[INDEX_C(start_pos)].player_slots[id] = nullptr;
+    if (start_pos != end_pos) // if player is not moving to another stone
+        board[INDEX_C(start_pos)].player_slots[id] = nullptr;
     *(board[INDEX_C(end_pos)].player_slots[id]) = end_pos;
     if (board[INDEX_C(end_pos)].treasure == treasure)
     {
