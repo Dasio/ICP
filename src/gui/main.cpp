@@ -1,3 +1,8 @@
+/* Authors:
+ * Dávid Mikuš      (xmikus15)
+ * Peter Hostačný   (xhosta03)
+ */
+
 #include "mainwindow.h"
 #include <QApplication>
 

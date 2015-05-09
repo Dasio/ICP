@@ -1,3 +1,8 @@
+/* Authors:
+ * Dávid Mikuš      (xmikus15)
+ * Peter Hostačný   (xhosta03)
+ */
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QGraphicsRectItem>
@@ -49,11 +54,22 @@ void MainWindow::on_loadButton_clicked()
     if(!fileName.isEmpty())
     {
         Game gameLogic;
-        gameLogic.loadGame(fileName.toStdString());
-        hide();
-        GameGUI gameGUI(this,gameLogic);
-        gameGUI.exec();
-        show();
+        if(gameLogic.loadGame(fileName.toStdString()))
+        {
+            hide();
+            GameGUI gameGUI(this,gameLogic);
+            gameGUI.exec();
+            show();
+        }
+        // Failed to load game
+        else
+        {
+            QMessageBox msgBox;
+            msgBox.setText("Failed to load game.");
+            msgBox.setIcon(QMessageBox::Information);
+            msgBox.exec();
+        }
+
     }
     else
     {

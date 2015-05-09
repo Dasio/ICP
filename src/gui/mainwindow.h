@@ -1,3 +1,8 @@
+/* Authors:
+ * Dávid Mikuš      (xmikus15)
+ * Peter Hostačný   (xhosta03)
+ */
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 

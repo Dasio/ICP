@@ -1,3 +1,8 @@
+/* Authors:
+ * Dávid Mikuš      (xmikus15)
+ * Peter Hostačný   (xhosta03)
+ */
+
 #include "game.h"
 #include "ui_game.h"
 #include <QGraphicsRectItem>
@@ -156,6 +161,7 @@ void GameGUI::drawScene()
             // Move it to right position
             pm->setPos(imgX,imgY);
 
+            // Draw treasure
             if(stone.treasure)
             {
                 pm = scene->addPixmap(_cardsImg[stone.treasure]);
@@ -249,7 +255,7 @@ int GameGUI::stoneToImgIndex(Stone &stone)
             {
                 case 0:
                 case 2:
-                    return 0;    
+                    return 0;
                 default:
                     return 1;
             }
@@ -347,7 +353,7 @@ void GameGUI::clicked(QPointF pos)
             if(winner != nullptr)
             {
                 QMessageBox msgBox(this);
-                msgBox.setText(QString::fromStdString(*winner) + "has won");
+                msgBox.setText(QString::fromStdString(*winner) + " won the game!");
                 msgBox.exec();
                 close();
             }
@@ -393,9 +399,11 @@ void GameGUI::on_saveButton_clicked()
     // If no file was chosen, nothing happens
     if(!fileName.isEmpty())
     {
-        gameLogic.saveGame(fileName.toStdString());
         QMessageBox msgBox(this);
-        msgBox.setText("Successfully saved");
+        if(gameLogic.saveGame(fileName.toStdString()))
+            msgBox.setText("Successfully saved");
+        else
+            msgBox.setText("Failed to save");
         msgBox.setIcon(QMessageBox::Information);
         msgBox.exec();
     }
