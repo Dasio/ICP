@@ -64,6 +64,7 @@ bool Game::initialize(int board_size, int treasure_count)
     if (!labyrinth.addPlayers(player_positions))
         return false;
 
+    next_action = SHIFT;
     return true;
 }
 
@@ -94,16 +95,39 @@ int Game::getPlayerScore(uint id)
 }
 
 
-void Game::nextPlayer()
+//////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////// TODO
+bool Game::clickBoard(int x, int y)
 {
-    player_on_turn = (player_on_turn + 1) % players.size();
+
+    if (next_action == SHIFT)
+    {
+        if (labyrinth.shift(x, y))
+        {
+            next_action = MOVE;
+            return true;
+        }
+    }
+    else // next_action == MOVE
+    {
+        if (movePlayer(x, y))
+        {
+            next_action = SHIFT;
+            player_on_turn = (player_on_turn + 1) % players.size();
+            return true;
+        }
+    }
+
+    return false;
 }
 
 
-//////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////// TODO
-bool Game::movePlayer()
+bool Game::movePlayer(int x, int y)
 {
+
+    players[player_on_turn].position.x = x;
+    players[player_on_turn].position.y = y;
+
     return true;
 }
 
@@ -145,4 +169,5 @@ bool Game::loadGame(std::string file_name)
 
     return true;
 }
+
 

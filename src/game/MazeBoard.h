@@ -20,14 +20,6 @@
 
 class MazeBoard
 {
-private:
-    int board_size; // = N ... (map size is N*N)
-    std::vector<Stone> board;
-
-    Stone free_stone;
-    Coords forbidden_shift; // for blocking reverse shift in the next turn
-
-
 public:
     void initialize(int board_size);
     bool addTreasures(int treasure_count);
@@ -40,6 +32,13 @@ public:
     inline Stone getFreeStone() { return free_stone; }
     inline int getSize() { return board_size; }
 
+
+private:
+    int board_size; // = N ... (map size is N*N)
+    std::vector<Stone> board;
+
+    Stone free_stone;
+    Coords forbidden_shift; // for blocking reverse shift in the next turn
 };
 
 

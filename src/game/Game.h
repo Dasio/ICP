@@ -15,21 +15,10 @@
 #include "MazeBoard.h"
 
 
+typedef enum {MOVE, SHIFT} Action;
+
 class Game
 {
-private:
-    // TODO: vector of DATA CONTAINERS with game_state for UNDO
-
-    std::vector<int> card_pack;
-    std::vector<Player> players;
-
-    int player_on_turn;
-
-    void shuffleCards();
-
-    void stateOfGame();
-
-
 public:
     MazeBoard labyrinth;
 
@@ -45,10 +34,8 @@ public:
 
     inline int getPlayersCount() { return players.size(); }
 
-    // change player_on_turn to the next player
-    void nextPlayer();
-
-    bool movePlayer();
+    // click to the gameboard and take an action if it is allowed
+    bool clickBoard(int x, int y);
 
     // return int representing the treasure on the top of card_pack
     // returns 0 if pack is empty
@@ -58,6 +45,21 @@ public:
     bool saveGame(std::string file_name);
     bool loadGame(std::string file_name);
 
+
+private:
+    // TODO: vector of DATA CONTAINERS (streams?) with game_state for UNDO
+
+    std::vector<int> card_pack;
+    std::vector<Player> players;
+
+    int player_on_turn;
+    Action next_action;
+
+    //void shuffleCards();
+    void stateOfGame();
+
+    // try to move player to the coordinates [x,y]
+    bool movePlayer(int x, int y);
 };
 
 

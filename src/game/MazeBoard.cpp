@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include <cstring>
 
 #include "MazeBoard.h"
 
@@ -168,33 +169,111 @@ bool MazeBoard::addPlayers(std::vector<Coords*> &player_positions)
 
 bool MazeBoard::shift(int clicked_x, int clicked_y)
 {
+    if (forbidden_shift.x == clicked_x && forbidden_shift.y == clicked_y)
+        return false;
+
+    Stone temp;
 
     if (clicked_x == 1 && clicked_y%2 == 0) // shifting even column down
     {
-        for (int x = 1; x <= board_size; x++)
+        temp = board[INDEX(board_size, clicked_y)]; // store last elemnt in column
+        // shift column down
+        for (int x = board_size; x > 1; x--)
         {
-            board[INDEX(x, clicked_y)];
+            board[INDEX(x, clicked_y)] = board[INDEX(x-1, clicked_y)];
         }
+        for (int x = 0; x < 4; x++) // move players from end of column
+        {
+            if (temp.player_slots[x])
+            {
+                free_stone.player_slots[x] = temp.player_slots[x];
+                (free_stone.player_slots[x])->x = 1; // change players x position
+                temp.player_slots[x] = nullptr;
+            }
+        }
+        // add free stone to the start of column
+        board[INDEX(1, clicked_y)] = free_stone;
+        free_stone = temp;
+
+        // prevent next move from reverse shift
+        forbidden_shift.x = board_size; forbidden_shift.y = clicked_y;
     }
     else if (clicked_x == board_size && clicked_y%2 == 0) // shifting even column up
     {
+        temp = board[INDEX(1, clicked_y)]; // store first elemnt in column
+        // shift column up
+        for (int x = 1; x < board_size; x++)
+        {
+            board[INDEX(x, clicked_y)] = board[INDEX(x+1, clicked_y)];
+        }
+        for (int x = 0; x < 4; x++) // move players from end of column
+        {
+            if (temp.player_slots[x])
+            {
+                free_stone.player_slots[x] = temp.player_slots[x];
+                (free_stone.player_slots[x])->x = board_size; // change players x position
+                temp.player_slots[x] = nullptr;
+            }
+        }
+        // add free stone to the end of column
+        board[INDEX(board_size, clicked_y)] = free_stone;
+        free_stone = temp;
 
+        // prevent next move from reverse shift
+        forbidden_shift.x = 1; forbidden_shift.y = clicked_y;
     }
     else if (clicked_x%2 == 0 && clicked_y == 1) // shifting even row right
     {
+        temp = board[INDEX(clicked_x, board_size)]; // store last elemnt in row
+        // shift row right
+        for (int y = board_size; y > 1; y--)
+        {
+            board[INDEX(clicked_x, y)] = board[INDEX(clicked_x, y-1)];
+        }
+        for (int x = 0; x < 4; x++) // move players from end of row
+        {
+            if (temp.player_slots[x])
+            {
+                free_stone.player_slots[x] = temp.player_slots[x];
+                (free_stone.player_slots[x])->x = 1; // change players x position
+                temp.player_slots[x] = nullptr;
+            }
+        }
+        // add free stone to the start of row
+        board[INDEX(clicked_x, 1)] = free_stone;
+        free_stone = temp;
 
+        // prevent next move from reverse shift
+        forbidden_shift.x = clicked_x; forbidden_shift.y = board_size;
     }
     else if (clicked_x%2 == 0 && clicked_y == board_size) // shifting even row left
     {
+        temp = board[INDEX(clicked_x, 1)]; // store first elemnt in row
+        // shift row left
+        for (int y = 1; y < board_size; y++)
+        {
+            board[INDEX(clicked_x, y)] = board[INDEX(clicked_x, y-1)];
+        }
+        for (int x = 0; x < 4; x++) // move players from end of row
+        {
+            if (temp.player_slots[x])
+            {
+                free_stone.player_slots[x] = temp.player_slots[x];
+                (free_stone.player_slots[x])->x = board_size; // change players x position
+                temp.player_slots[x] = nullptr;
+            }
+        }
+        // add free stone to the end of row
+        board[INDEX(clicked_x, board_size)] = free_stone;
+        free_stone = temp;
 
+        // prevent next move from reverse shift
+        forbidden_shift.x = clicked_x; forbidden_shift.y = 1;
     }
     else
         return false;
 
-
     return true;
-
-    // add coordinates to forbidden_shift if board was shifted
 }
 
 void MazeBoard::rotateFreeStone()
