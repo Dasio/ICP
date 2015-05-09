@@ -40,6 +40,7 @@ public:
     int addPlayer(std::string name);
 
     std::string getPlayerName(uint id);
+    int getPlayerScore(uint id);
 
     inline int getPlayersCount() { return players.size(); }
 

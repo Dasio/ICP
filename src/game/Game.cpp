@@ -73,6 +73,13 @@ std::string Game::getPlayerName(uint id)
     return std::string();
 }
 
+int Game::getPlayerScore(uint id)
+{
+    if (id < players.size())
+        return players[id].score;
+    return -1;
+}
+
 
 void Game::nextPlayer()
 {
