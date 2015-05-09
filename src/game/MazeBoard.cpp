@@ -159,7 +159,7 @@ bool MazeBoard::addPlayers(std::vector<Coords*> &player_positions)
 
     for (uint x = 0; x < player_positions.size(); x++)
     {
-        std::cout << "generating player [" << (player_positions[x])->x << ","  << (player_positions[x])->y << "]" << std::endl;
+        //std::cout << "generating player [" << (player_positions[x])->x << ","  << (player_positions[x])->y << "]" << std::endl;
         board[INDEX_1(*(player_positions[x]))].player_slots[x] = player_positions[x];
     }
     return true;

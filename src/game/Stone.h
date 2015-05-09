@@ -36,7 +36,8 @@ public:
     bool canGo(Direction dir);
 
     Stone() = default;
-    Stone(StoneType new_type, int rot=0) {type = new_type; rotation = rot;}
+    Stone(const StoneType new_type, const int rot=0)
+        : type(new_type), rotation(rot), treasure(0), player_slots{0} {}
 };
 
 
