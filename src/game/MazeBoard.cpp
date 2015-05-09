@@ -8,7 +8,7 @@
 
 #include <algorithm>
 #include <random>
-#include <ctime>
+#include <chrono>
 
 #include "MazeBoard.h"
 
@@ -93,7 +93,8 @@ void MazeBoard::initialize(int _board_size)
     }
 
     // shuffle remaining stones
-    auto engine = std::default_random_engine{};
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    auto engine = std::default_random_engine{seed};
     std::shuffle(std::begin(temp_board), std::end(temp_board), engine);
 
     // adding remaining stones to the even rows (N/2)*N
@@ -137,7 +138,8 @@ bool MazeBoard::addTreasures(int treasure_count)
     }
 
     // shuffle coordinates where treasures will be placed in
-    auto engine = std::default_random_engine{};
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    auto engine = std::default_random_engine{seed};
     std::shuffle(std::begin(temp_coords), std::end(temp_coords), engine);
 
     // fill first 'treasure_count' coordinates with treasures
@@ -157,28 +159,32 @@ bool MazeBoard::addPlayers(std::vector<Coords*> &player_positions)
 
     for (uint x = 0; x < player_positions.size(); x++)
     {
+        std::cout << "generating player [" << (player_positions[x])->x << ","  << (player_positions[x])->y << "]" << std::endl;
         board[INDEX_1(*(player_positions[x]))].player_slots[x] = player_positions[x];
     }
     return true;
 }
 
 
-bool MazeBoard::shift(int x, int y)
+bool MazeBoard::shift(int clicked_x, int clicked_y)
 {
 
-    if (x == 1 && y%2 == 0) // shifting column down
+    if (clicked_x == 1 && clicked_y%2 == 0) // shifting even column down
+    {
+        for (int x = 1; x <= board_size; x++)
+        {
+            board[INDEX(x, clicked_y)];
+        }
+    }
+    else if (clicked_x == board_size && clicked_y%2 == 0) // shifting even column up
     {
 
     }
-    else if (x == 1 && y%2 == 0) // shifting column down
+    else if (clicked_x%2 == 0 && clicked_y == 1) // shifting even row right
     {
 
     }
-    else if (x == 1 && y%2 == 0) // shifting column down
-    {
-
-    }
-    else if (x == 1 && y%2 == 0) // shifting column down
+    else if (clicked_x%2 == 0 && clicked_y == board_size) // shifting even row left
     {
 
     }

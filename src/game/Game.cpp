@@ -10,6 +10,7 @@
 #include <fstream>
 #include <algorithm>
 #include <random>
+#include <chrono>
 
 #include "Game.h"
 
@@ -35,7 +36,8 @@ bool Game::initialize(int board_size, int treasure_count)
     {
         card_pack.push_back(x);
     }
-    auto engine = std::default_random_engine{};
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    auto engine = std::default_random_engine{seed};
     std::shuffle(std::begin(card_pack), std::end(card_pack), engine);
 
     // initialize players positions
