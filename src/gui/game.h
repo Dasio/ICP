@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef GAMEGUI_H
+#define GAMEGUI_H
 
 #include <QDialog>
 #include <QGraphicsObject>
@@ -9,6 +9,7 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <boost/bimap.hpp>
+#include "../src/game/Game.h"
 
 namespace Ui {
 class Game;
@@ -16,13 +17,13 @@ class Game;
 class CustomView;
 
 
-class Game : public QDialog
+class GameGUI : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit Game(QWidget *parent = 0);
-    ~Game();
+    explicit GameGUI(QWidget *parent, Game &_gameLogic);
+    ~GameGUI();
     void clicked(QPointF pos);
     boost::bimap<int, int> xPos;
     boost::bimap<int, int> yPos;
@@ -60,6 +61,7 @@ private:
     CustomView* _view;
     std::vector<QPixmap> _pathImg;
     QGraphicsPixmapItem *player1Pixmap;
+    Game &gameLogic;
 
 
 };
@@ -68,14 +70,14 @@ class CustomView : public QGraphicsView
 {
     Q_OBJECT
 public:
-    CustomView(Game *game) : QGraphicsView(), _game(game)
+    CustomView(GameGUI *game) : QGraphicsView(), _game(game)
     {
         setMouseTracking(true);
     }
 private:
-    Game* _game;
+    GameGUI* _game;
     void mousePressEvent(QMouseEvent *event);
     bool _hover;
 
 };
-#endif // GAME_H
+#endif // GAMEGUI_H

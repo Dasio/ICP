@@ -63,6 +63,9 @@
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QLabel" name="player3_label">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Player 3</string>
         </property>
@@ -81,6 +84,9 @@
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
        <widget class="QLabel" name="player4_label">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Player 4</string>
         </property>

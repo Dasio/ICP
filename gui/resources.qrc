@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/path">
-        <file>art/four.png</file>
         <file>art/horizontal.png</file>
         <file>art/three1.png</file>
         <file>art/three2.png</file>

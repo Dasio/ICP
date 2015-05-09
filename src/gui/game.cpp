@@ -4,10 +4,11 @@
 #include <QDebug>
 #include <QBitmap>
 
-Game::Game(QWidget *parent) :
+GameGUI::GameGUI(QWidget *parent, Game &_gameLogic) :
     QDialog(parent),
     ui(new Ui::Game),
-    scene(new QGraphicsScene(this))
+    scene(new QGraphicsScene(this)),
+    gameLogic(_gameLogic)
 {
 
     ui->setupUi(this);
@@ -28,21 +29,30 @@ Game::Game(QWidget *parent) :
     QGraphicsPixmapItem *pm = scene->addPixmap(player);
     pm->setPos(60,-70);*/
 }
-Game::~Game()
+GameGUI::~GameGUI()
 {
     delete ui;
     delete scene;
 }
 
-void Game::setNames()
+void GameGUI::setNames()
 {
     // Get from API and check player count
-    ui->player1Name_label->setText("Abc");
-    ui->player2Name_label->setText("Def");
-    ui->player3Name_label->setText("Xzy");
-    ui->player4Name_label->setText("Uvy");
+    ui->player1Name_label->setText(QString::fromStdString(gameLogic.getPlayer(0)->getName()));
+    ui->player2Name_label->setText(QString::fromStdString(gameLogic.getPlayer(1)->getName()));
+    int playersSize = gameLogic.getPlayersCount();
+    switch(playersSize)
+    {
+        case 4:
+            ui->player4_label->setEnabled(true);
+            ui->player4Name_label->setText(QString::fromStdString(gameLogic.getPlayer(3)->getName()));
+        case 3:
+            ui->player3_label->setEnabled(true);
+            ui->player3Name_label->setText(QString::fromStdString(gameLogic.getPlayer(2)->getName()));
+
+    };
 }
-void Game::loadPathImgs()
+void GameGUI::loadPathImgs()
 {
     _pathImg.push_back(QPixmap(":/path/art/vertical.png"));
     _pathImg.push_back(QPixmap(":/path/art/horizontal.png"));
@@ -57,10 +67,10 @@ void Game::loadPathImgs()
 }
 
 
-void Game::drawStones()
+void GameGUI::drawStones()
 {
     std::vector<pos> stones;
-    int N = 7;
+    int N = gameLogic.labyrinth.getSize();
     int size = 66;
     int r;
     if(N == 9)
@@ -85,7 +95,7 @@ void Game::drawStones()
     }
 }
 
-void Game::spawnPlayer()
+void GameGUI::spawnPlayer()
 {
     QPixmap player(":/player/art/down_stand.png");
     player.setDevicePixelRatio(1.5);
@@ -94,20 +104,20 @@ void Game::spawnPlayer()
     player1Pixmap->setPos(pos.x() + 20,pos.y() + 10);
 }
 
-QPointF Game::getCoords(int x, int y)
+QPointF GameGUI::getCoords(int x, int y)
 {
     int a = xPos.right.at(x);
     int b = yPos.right.at(y);
     return QPointF(a,b);
 }
 
-void Game::movePlayer(int x, int y)
+void GameGUI::movePlayer(int x, int y)
 {
     QPointF pos = getCoords(x,y);
     player1Pixmap->setPos(pos.x() + 20,pos.y() + 10);
 }
 
-void Game::clicked(QPointF pos)
+void GameGUI::clicked(QPointF pos)
 {
     player1Pixmap->setPos(pos.x() + 20,pos.y() + 10);
 }
