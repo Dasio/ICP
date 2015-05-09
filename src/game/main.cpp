@@ -11,8 +11,6 @@
 
 int main(/*int argc, char *argv[]*/)
 {
-
-
     Game game;
 
     game.addPlayer("Player1");
