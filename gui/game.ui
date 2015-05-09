@@ -26,13 +26,6 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QLabel" name="player1_label">
-        <property name="text">
-         <string>Player 1</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QLabel" name="player1Name_label">
         <property name="text">
          <string/>
@@ -50,13 +43,6 @@
     </item>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <widget class="QLabel" name="player2_label">
-        <property name="text">
-         <string>Player 2</string>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="QLabel" name="player2Name_label">
         <property name="text">
@@ -76,16 +62,6 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="QLabel" name="player3_label">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Player 3</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QLabel" name="player3Name_label">
         <property name="text">
          <string/>
@@ -103,16 +79,6 @@
     </item>
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_4">
-      <item>
-       <widget class="QLabel" name="player4_label">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Player 4</string>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="QLabel" name="player4Name_label">
         <property name="text">
@@ -153,6 +119,24 @@
    </property>
    <property name="text">
     <string>Some information text here</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="actionLabel">
+   <property name="geometry">
+    <rect>
+     <x>780</x>
+     <y>180</y>
+     <width>121</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>20</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
    </property>
   </widget>
   <widget class="QWidget" name="">

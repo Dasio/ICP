@@ -13,10 +13,11 @@ GameGUI::GameGUI(QWidget *parent, Game &_gameLogic) :
 {
     playersPixmap.resize(4);
     ui->setupUi(this);
-    ui->player3_label->setVisible(false);
-    ui->player4_label->setVisible(false);
+    ui->player3Name_label->setVisible(false);
+    ui->player4Name_label->setVisible(false);
     // Create view
     _view = new CustomView(this);
+    _view->setBackgroundBrush(QBrush(Qt::yellow, Qt::Dense6Pattern));
     // Attach it to scene
     _view->setScene(scene);
     // Add it to window
@@ -36,20 +37,16 @@ GameGUI::~GameGUI()
 
 void GameGUI::setNames()
 {
-    ui->player1_label->setStyleSheet("QLabel { color : green; }");
-    ui->player2_label->setStyleSheet("QLabel { color : red; }");
-    ui->player3_label->setStyleSheet("QLabel { color : blue; }");
-    ui->player4_label->setStyleSheet("QLabel { color : yellow; }");
     ui->player1Name_label->setText(QString::fromStdString(gameLogic.getPlayerName(0)));
     ui->player2Name_label->setText(QString::fromStdString(gameLogic.getPlayerName(1)));
     int playersSize = gameLogic.getPlayersCount();
     switch(playersSize)
     {
         case 4:
-            ui->player4_label->setVisible(true);
+            ui->player4Name_label->setVisible(true);
             ui->player4Name_label->setText(QString::fromStdString(gameLogic.getPlayerName(3)));
         case 3:
-            ui->player3_label->setVisible(true);
+            ui->player3Name_label->setVisible(true);
             ui->player3Name_label->setText(QString::fromStdString(gameLogic.getPlayerName(2)));
     };
 }
@@ -91,24 +88,24 @@ void GameGUI::redrawScene()
 void GameGUI::actualizeStatus()
 {
     // Set who is on turn
-    QString activeStyle("QLabel { background-color : red}");
-    ui->player1Name_label->setStyleSheet("");
-    ui->player2Name_label->setStyleSheet("");
-    ui->player3Name_label->setStyleSheet("");
-    ui->player4Name_label->setStyleSheet("");
+    QString activeStyle("QLabel { border: 1px solid  #ff0000 ;");
+    ui->player1Name_label->setStyleSheet("QLabel { color : green; }");
+    ui->player2Name_label->setStyleSheet("QLabel { color : red; }");
+    ui->player3Name_label->setStyleSheet("QLabel { color : blue; }");
+    ui->player4Name_label->setStyleSheet("QLabel { color : yellow; }");
     switch(gameLogic.activePlayer())
     {
         case 0:
-            ui->player1Name_label->setStyleSheet(activeStyle);
+            ui->player1Name_label->setStyleSheet(activeStyle + "color:green;}" );
             break;
         case 1:
-            ui->player2Name_label->setStyleSheet(activeStyle);
+            ui->player2Name_label->setStyleSheet(activeStyle + "color:red;}" );
             break;
         case 2:
-            ui->player3Name_label->setStyleSheet(activeStyle);
+            ui->player3Name_label->setStyleSheet(activeStyle + "color:blue;}" );
             break;
         case 3:
-            ui->player4Name_label->setStyleSheet(activeStyle);
+            ui->player4Name_label->setStyleSheet(activeStyle + "color:yellow;}" );
             break;
     }
     QString maxscore = QString::number(gameLogic.getMaxScore());
@@ -124,6 +121,11 @@ void GameGUI::actualizeStatus()
         case 3:
             ui->player3Score->setText(QString::number(gameLogic.getPlayerScore(2)) + "/" + maxscore);
     };
+    // Set action
+    if(gameLogic.nextAction() == MOVE)
+        ui->actionLabel->setText("Move");
+    else
+        ui->actionLabel->setText("Shift");
 
 }
 
@@ -336,8 +338,15 @@ void GameGUI::clicked(QPointF pos)
     else if(rpos.x() == -2)
         qDebug() << "Card";
     else
-        gameLogic.clickBoard(rpos.y(),rpos.x());
-    qDebug() << rpos.x() << ":" << rpos.y();
+    {
+        if(gameLogic.clickBoard(rpos.y(),rpos.x()))
+        {
+            ui->infoLabel->setText("OK");
+        }
+        else
+            ui->infoLabel->setText("Failed to make action");
+
+    }
     redrawScene();
 }
 
