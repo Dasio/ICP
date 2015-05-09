@@ -25,9 +25,12 @@ class GameGUI : public QDialog
 public:
     explicit GameGUI(QWidget *parent, Game &_gameLogic);
     ~GameGUI();
-    void clicked(QPoint pos);
+    void clicked(QPointF pos);
     boost::bimap<int, int> xPos;
     boost::bimap<int, int> yPos;
+    QPushButton* rotateButton;
+public slots:
+    void rotateClicked();
 
 private:
     struct pos{
@@ -35,6 +38,11 @@ private:
         pos(int _x,int _y) : x(_x),y(_y) { }
         int x,y;
     };
+
+    /**
+     * @brief clear scene and draw it again
+     */
+    void redrawScene();
     /**
      * @brief Update labels with player names
      */
@@ -70,11 +78,10 @@ private:
      * @param x-offset
      */
     void spawnPlayer(int id, int x, int y, int off = 20);
+    void drawFreeStone();
     void movePlayer(int id, int x, int y);
-    const unsigned int playerHeight = 70;
-    const unsigned int playerWidth = 45;
-    const unsigned int playerSpace = 20;
-    QPoint getCoords(int x, int y,bool right);
+
+    QPointF getCoords(int x, int y,bool right);
     std::vector<QPixmap> _playerSprite;
     Ui::Game *ui;
     QGraphicsScene *scene;
@@ -83,6 +90,8 @@ private:
     std::vector<QGraphicsPixmapItem*> playersPixmap;
     Game &gameLogic;
     std::vector<QPushButton*> _buttons;
+
+
 
 
 };

@@ -1,8 +1,8 @@
 #include "game.h"
 #include "ui_game.h"
 #include <QGraphicsRectItem>
+#include <QGraphicsProxyWidget>
 #include <QDebug>
-#include <QBitmap>
 
 GameGUI::GameGUI(QWidget *parent, Game &_gameLogic) :
     QDialog(parent),
@@ -12,14 +12,13 @@ GameGUI::GameGUI(QWidget *parent, Game &_gameLogic) :
 {
     playersPixmap.resize(4);
     ui->setupUi(this);
-    CustomView *view = new CustomView(this);
-    view->setScene(scene);
-    ui->gridLayout->addWidget(view);
+    _view = new CustomView(this);
+    _view->setScene(scene);
+    ui->gridLayout->addWidget(_view);
     setNames();
     loadStones();
     drawScene();
-    //createButtons();
-   // spawnPlayer(2,2,3);
+    redrawScene();
 }
 GameGUI::~GameGUI()
 {
@@ -62,7 +61,13 @@ void GameGUI::loadStones()
 {
     loadPathImgs();
 }
-
+void GameGUI::redrawScene()
+{
+    scene->clear();
+    xPos.clear();
+    yPos.clear();
+    drawScene();
+}
 void GameGUI::drawScene()
 {
     int N = gameLogic.labyrinth.getSize();
@@ -124,7 +129,30 @@ void GameGUI::drawScene()
                     j++;
                 }
         }
+    drawFreeStone();
 }
+
+void GameGUI::drawFreeStone()
+{
+    int mid = (gameLogic.labyrinth.getSize()) / 2 + 1;
+    Stone stone = gameLogic.labyrinth.getFreeStone();
+    QGraphicsPixmapItem *pm = scene->addPixmap(_pathImg[stoneToImgIndex(stone)]);
+    // Bimap for maping real position and grid position
+    QPointF pos = getCoords(gameLogic.labyrinth.getSize(),mid,true);
+    int x = pos.x() + 100;
+    xPos.insert(boost::bimap<int,int>::value_type(x,-1));
+    yPos.insert(boost::bimap<int,int>::value_type(pos.y(),-1));
+    // Move it to right position
+    pm->setPos(x,pos.y());
+    // Create button for rotation
+    rotateButton = new QPushButton();
+    //but->setGeometry(QRect(QPoint(x,pos.y()),QSize(50,30)));
+    rotateButton->setGeometry(x,pos.y()+55,50,20);
+    rotateButton->setText("Rotate");
+    QObject::connect(rotateButton, SIGNAL(clicked()), this, SLOT(rotateClicked()));
+    QGraphicsProxyWidget* proxyWidget = scene->addWidget(rotateButton);
+}
+
 void GameGUI::createButtons()
 {
     int N = gameLogic.labyrinth.getSize();
@@ -209,13 +237,14 @@ void GameGUI::spawnPlayer(int id, int x, int y, int off)
     playersPixmap[id-1]->setPos(pos.x() + off,pos.y() + 10);
 }
 
-QPoint GameGUI::getCoords(int x, int y,bool right)
+QPointF GameGUI::getCoords(int x, int y,bool right)
 {
     int a,b;
     if(right)
     {
         a = xPos.right.at(x);
         b = yPos.right.at(y);
+
     }
     else
     {
@@ -223,22 +252,30 @@ QPoint GameGUI::getCoords(int x, int y,bool right)
         b = yPos.left.at(y);
     }
 
-    return QPoint(a,b);
+    return QPointF(a,b);
 }
 
 void GameGUI::movePlayer(int id,int x, int y)
 {
-    QPoint pos = getCoords(x,y,true);
+    QPointF pos = getCoords(x,y,true);
     playersPixmap[id]->setPos(pos.x() + 20,pos.y() + 10);
 }
 
-void GameGUI::clicked(QPoint pos)
+void GameGUI::clicked(QPointF pos)
 {
-    //player1Pixmap->setPos(pos.x() + 20,pos.y() + 10);
-    QPoint newpos = getCoords(pos.x(),pos.y(),false);
-    movePlayer(0,newpos.x(),newpos.y());
+    QPointF rpos = getCoords(pos.x(),pos.y(),false);
+    if(rpos.x() == -1)
+        qDebug() << "Free stone";
+    else
+        gameLogic.clickBoard(rpos.x(),rpos.y());
+    qDebug() << rpos.x() << ":" << rpos.y();
+    redrawScene();
 }
 
+void GameGUI::rotateClicked()
+{
+    qDebug() << "click";
+}
 
 void CustomView::mousePressEvent(QMouseEvent *event)
 {
@@ -247,11 +284,12 @@ void CustomView::mousePressEvent(QMouseEvent *event)
     if(!_items.isEmpty())
     {
         item = _items.last();
-        //qDebug() << _game->xPos.left.at(item->pos().x()) << ":" << _game->xPos.left.at(item->pos().y());
-        _game->clicked(item->pos().toPoint());
-
+        if(item->type() == 7)
+            _game->clicked(item->pos());
     }
     else
         qDebug() << "miss";
+    QGraphicsView::mousePressEvent(event);
+
 }
 

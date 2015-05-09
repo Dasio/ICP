@@ -28,7 +28,6 @@ void MainWindow::on_createGameButton_clicked()
     if(ui->player4Enable->isChecked())
         gameLogic.addPlayer(ui->player4Name->text().toStdString());
     int mapSize = ui->sizeBox->currentText().toInt();
-    qDebug() << mapSize;
     if(gameLogic.initialize(mapSize))
     {
         hide();
