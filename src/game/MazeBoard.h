@@ -32,6 +32,8 @@ public:
     inline Stone getFreeStone() { return free_stone; }
     inline int getSize() { return board_size; }
 
+    void makePath(std::vector<Coords> &start_pos);
+
 
 private:
     int board_size; // = N ... (map size is N*N)

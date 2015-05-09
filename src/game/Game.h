@@ -31,11 +31,14 @@ public:
 
     std::string getPlayerName(uint id);
     int getPlayerScore(uint id);
+    inline int getMaxScore() { return max_score; }
 
     inline int getPlayersCount() { return players.size(); }
 
     // click to the gameboard and take an action if it is allowed
     bool clickBoard(int x, int y);
+
+    inline std::string* checkWinner() { return winner; }
 
     // return int representing the treasure on the top of card_pack
     // returns 0 if pack is empty
@@ -57,6 +60,9 @@ private:
 
     int player_on_turn;
     Action next_action;
+    int max_score;
+
+    std::string *winner;
 
     void stateOfGame();
 

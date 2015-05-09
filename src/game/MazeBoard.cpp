@@ -280,3 +280,9 @@ void MazeBoard::rotateFreeStone()
 {
     free_stone.rotation = (free_stone.rotation + 1) % 4;
 }
+
+
+void MazeBoard::makePath(std::vector<Coords> &start_pos)
+{
+    start_pos[0];
+}
