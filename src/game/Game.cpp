@@ -139,7 +139,8 @@ bool Game::tryMovePlayer(int x, int y)
     if (labyrinth.checkPath(act_player->position, Coords(x,y), available_moves))
     {
         if (labyrinth.movePlayer(act_player->position, Coords(x,y), player_on_turn, actualCard()))
-        {
+        {   //treasure was collected
+            card_pack.pop_back();
             if (++(act_player->score) == max_score)  // add score - check winner
                 winner = &(act_player->name);
         }

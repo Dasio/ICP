@@ -181,6 +181,11 @@ bool MazeBoard::shift(int clicked_x, int clicked_y)
         for (int x = board_size; x > 1; x--)
         {
             board[INDEX(x, clicked_y)] = board[INDEX(x-1, clicked_y)];
+            for (int i = 0; i < 4; i++)
+            {
+                if (board[INDEX(x, clicked_y)].player_slots[i])
+                   *(board[INDEX(x, clicked_y)].player_slots[i]) = Coords(x, clicked_y);
+            }
         }
         for (int x = 0; x < 4; x++) // move players from end of column
         {
@@ -205,6 +210,11 @@ bool MazeBoard::shift(int clicked_x, int clicked_y)
         for (int x = 1; x < board_size; x++)
         {
             board[INDEX(x, clicked_y)] = board[INDEX(x+1, clicked_y)];
+            for (int i = 0; i < 4; i++)
+            {
+                if (board[INDEX(x, clicked_y)].player_slots[i])
+                   *(board[INDEX(x, clicked_y)].player_slots[i]) = Coords(x, clicked_y);
+            }
         }
         for (int x = 0; x < 4; x++) // move players from end of column
         {
@@ -229,6 +239,11 @@ bool MazeBoard::shift(int clicked_x, int clicked_y)
         for (int y = board_size; y > 1; y--)
         {
             board[INDEX(clicked_x, y)] = board[INDEX(clicked_x, y-1)];
+            for (int i = 0; i < 4; i++)
+            {
+                if (board[INDEX(clicked_x, y)].player_slots[i])
+                   *(board[INDEX(clicked_x, y)].player_slots[i]) = Coords(clicked_x, y);
+            }
         }
         for (int x = 0; x < 4; x++) // move players from end of row
         {
@@ -253,6 +268,11 @@ bool MazeBoard::shift(int clicked_x, int clicked_y)
         for (int y = 1; y < board_size; y++)
         {
             board[INDEX(clicked_x, y)] = board[INDEX(clicked_x, y+1)];
+            for (int i = 0; i < 4; i++)
+            {
+                if (board[INDEX(clicked_x, y)].player_slots[i])
+                   *(board[INDEX(clicked_x, y)].player_slots[i]) = Coords(clicked_x, y);
+            }
         }
         for (int x = 0; x < 4; x++) // move players from end of row
         {

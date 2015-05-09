@@ -51,7 +51,6 @@ public:
     bool saveGame(std::string file_name);
     bool loadGame(std::string file_name);
 
-
 private:
     // TODO: vector of DATA CONTAINERS (streams?) with game_state for UNDO
 
