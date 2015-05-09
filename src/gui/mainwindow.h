@@ -29,6 +29,10 @@ private slots:
 
     void on_exitButton_clicked();
 
+    void on_sizeBox_currentIndexChanged(int index);
+
+    void on_treasureBox_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow *ui;
 };

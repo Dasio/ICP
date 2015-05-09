@@ -164,7 +164,7 @@ void GameGUI::drawScene()
             // Draw treasure
             if(stone.treasure)
             {
-                pm = scene->addPixmap(_cardsImg[stone.treasure]);
+                pm = scene->addPixmap(_cardsImg[stone.treasure-1]);
                 pm->setScale(0.35);
                 pm->setPos(imgX+10,imgY+17);
             }
@@ -255,7 +255,7 @@ int GameGUI::stoneToImgIndex(Stone &stone)
             {
                 case 0:
                 case 2:
-                    return 0;
+                    return 0;    
                 default:
                     return 1;
             }

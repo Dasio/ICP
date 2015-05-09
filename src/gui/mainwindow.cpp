@@ -33,12 +33,20 @@ void MainWindow::on_createGameButton_clicked()
     if(ui->player4Enable->isChecked())
         gameLogic.addPlayer(ui->player4Name->text().toStdString());
     int mapSize = ui->sizeBox->currentText().toInt();
-    if(gameLogic.initialize(mapSize))
+    int treasureCount = ui->treasureBox->currentText().toInt();
+    if(gameLogic.initialize(mapSize,treasureCount))
     {
         hide();
         GameGUI gameGUI(this,gameLogic);
         gameGUI.exec();
         show();
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Failed to init game.");
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.exec();
     }
 }
 
@@ -83,4 +91,18 @@ void MainWindow::on_loadButton_clicked()
 void MainWindow::on_exitButton_clicked()
 {
     close();
+}
+
+void MainWindow::on_sizeBox_currentIndexChanged(int index)
+{
+    // If size is 5, change treasure count to 12
+    if(index == 0)
+        ui->treasureBox->setCurrentIndex(0);
+}
+
+void MainWindow::on_treasureBox_currentIndexChanged(int index)
+{
+    // If was treasure set to 24 and size was 5, set it to 7
+    if(index == 1 && ui->sizeBox->currentIndex() == 0)
+        ui->sizeBox->setCurrentIndex(1);
 }

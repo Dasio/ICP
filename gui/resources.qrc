@@ -42,6 +42,5 @@
         <file>art/axe.png</file>
         <file>art/viper.png</file>
         <file>art/lina.png</file>
-        <file>art/_empty.png</file>
     </qresource>
 </RCC>

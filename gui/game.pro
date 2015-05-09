@@ -17,14 +17,12 @@ SOURCES += ../src/gui/main.cpp\
 	../src/gui/game.cpp \
     ../src/game/Game.cpp \
     ../src/game/MazeBoard.cpp \
-    ../src/game/Player.cpp \
     ../src/game/Stone.cpp
 
 HEADERS  += ../src/gui/mainwindow.h \
 	../src/gui/game.h \
     ../src/game/Game.h \
     ../src/game/MazeBoard.h \
-    ../src/game/Player.h \
     ../src/game/Stone.h
 
 FORMS    += mainwindow.ui \
