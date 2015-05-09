@@ -145,7 +145,7 @@
      <x>780</x>
      <y>340</y>
      <width>101</width>
-     <height>62</height>
+     <height>95</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -160,6 +160,13 @@
      <widget class="QPushButton" name="undoButton">
       <property name="text">
        <string>Undo</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="exitButton">
+      <property name="text">
+       <string>Exit</string>
       </property>
      </widget>
     </item>

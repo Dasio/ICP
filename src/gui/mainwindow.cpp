@@ -33,7 +33,7 @@ void MainWindow::on_createGameButton_clicked()
         hide();
         GameGUI gameGUI(this,gameLogic);
         gameGUI.exec();
-        close();
+        show();
     }
 }
 
@@ -53,7 +53,7 @@ void MainWindow::on_loadButton_clicked()
         hide();
         GameGUI gameGUI(this,gameLogic);
         gameGUI.exec();
-        close();
+        show();
     }
     else
     {
@@ -62,4 +62,9 @@ void MainWindow::on_loadButton_clicked()
         msgBox.setIcon(QMessageBox::Information);
         msgBox.exec();
     }
+}
+
+void MainWindow::on_exitButton_clicked()
+{
+    close();
 }

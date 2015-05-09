@@ -40,6 +40,8 @@ private slots:
 
     void on_undoButton_clicked();
 
+    void on_exitButton_clicked();
+
 private:
     struct pos{
         pos() = default;

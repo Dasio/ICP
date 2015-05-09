@@ -342,6 +342,15 @@ void GameGUI::clicked(QPointF pos)
         if(gameLogic.clickBoard(rpos.y(),rpos.x()))
         {
             ui->infoLabel->setText("OK");
+            std::string *winner = gameLogic.checkWinner();
+            // End game
+            if(winner != nullptr)
+            {
+                QMessageBox msgBox(this);
+                msgBox.setText(QString::fromStdString(*winner) + "has won");
+                msgBox.exec();
+                close();
+            }
         }
         else
             ui->infoLabel->setText("Failed to make action");
@@ -402,4 +411,9 @@ void GameGUI::on_saveButton_clicked()
 void GameGUI::on_undoButton_clicked()
 {
     qDebug() << "undo";
+}
+
+void GameGUI::on_exitButton_clicked()
+{
+    close();
 }
