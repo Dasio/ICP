@@ -14,7 +14,7 @@
 
 // get index to vector from board coordinates
 #define INDEX(x,y) ((x-1) * board_size + (y-1))
-#define INDEX_1(coord) (((coord).x-1) * board_size + ((coord).y-1))
+#define INDEX_C(coord) (((coord).x-1) * board_size + ((coord).y-1))
 
 
 
@@ -32,7 +32,11 @@ public:
     inline Stone getFreeStone() { return free_stone; }
     inline int getSize() { return board_size; }
 
-    void makePath(std::vector<Coords> &start_pos);
+    // check if coordinates are correct
+    bool onBoard(Coords pos);
+
+    // check if there is possible path from start_pos to end_pos
+    bool checkPath(Coords start_pos, Coords end_pos);
 
 
 private:

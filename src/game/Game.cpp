@@ -69,10 +69,6 @@ bool Game::initialize(int board_size, int treasure_count)
     max_score = treasure_count / players.size();
     winner = nullptr;
 
-////////////////////////////////////////////////////////////////////////
-    movePlayer(2, 2);
-
-
     return true;
 
 
@@ -136,23 +132,17 @@ bool Game::movePlayer(int x, int y)
 {
     Player *act_player = &(players[player_on_turn]);
 
-    std::vector<Coords> available_moves {act_player->position};
+    if (labyrinth.checkPath(act_player->position, Coords(x,y)))
+    {
+        act_player->position.x = x;
+        act_player->position.y = y;
 
-    labyrinth.makePath(available_moves);
+        // set winner if there is any
 
-    std::cout << available_moves.size() << std::endl;
-
-
-    //act_player->position
-
-    act_player->position.x = x;
-    act_player->position.y = y;
-
-    // set winner if there is any
-
-    return true;
+        return true;
+    }
+    return false;
 }
-
 
 
 

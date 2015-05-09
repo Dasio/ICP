@@ -161,7 +161,7 @@ bool MazeBoard::addPlayers(std::vector<Coords*> &player_positions)
     for (uint x = 0; x < player_positions.size(); x++)
     {
         //std::cout << "generating player [" << (player_positions[x])->x << ","  << (player_positions[x])->y << "]" << std::endl;
-        board[INDEX_1(*(player_positions[x]))].player_slots[x] = player_positions[x];
+        board[INDEX_C(*(player_positions[x]))].player_slots[x] = player_positions[x];
     }
     return true;
 }
@@ -174,8 +174,8 @@ bool MazeBoard::shift(int clicked_x, int clicked_y)
 
     Stone temp;
 
-    if (clicked_x == 1 && clicked_y%2 == 0) // shifting even column down
-    {
+    if (clicked_x == 1 && clicked_y%2 == 0)
+    {   // shifting even column down
         temp = board[INDEX(board_size, clicked_y)]; // store last elemnt in column
         // shift column down
         for (int x = board_size; x > 1; x--)
@@ -198,8 +198,8 @@ bool MazeBoard::shift(int clicked_x, int clicked_y)
         // prevent next move from reverse shift
         forbidden_shift.x = board_size; forbidden_shift.y = clicked_y;
     }
-    else if (clicked_x == board_size && clicked_y%2 == 0) // shifting even column up
-    {
+    else if (clicked_x == board_size && clicked_y%2 == 0)
+    {   // shifting even column up
         temp = board[INDEX(1, clicked_y)]; // store first elemnt in column
         // shift column up
         for (int x = 1; x < board_size; x++)
@@ -222,8 +222,8 @@ bool MazeBoard::shift(int clicked_x, int clicked_y)
         // prevent next move from reverse shift
         forbidden_shift.x = 1; forbidden_shift.y = clicked_y;
     }
-    else if (clicked_x%2 == 0 && clicked_y == 1) // shifting even row right
-    {
+    else if (clicked_x%2 == 0 && clicked_y == 1)
+    {   // shifting even row right
         temp = board[INDEX(clicked_x, board_size)]; // store last elemnt in row
         // shift row right
         for (int y = board_size; y > 1; y--)
@@ -246,13 +246,13 @@ bool MazeBoard::shift(int clicked_x, int clicked_y)
         // prevent next move from reverse shift
         forbidden_shift.x = clicked_x; forbidden_shift.y = board_size;
     }
-    else if (clicked_x%2 == 0 && clicked_y == board_size) // shifting even row left
-    {
+    else if (clicked_x%2 == 0 && clicked_y == board_size)
+    {   // shifting even row left
         temp = board[INDEX(clicked_x, 1)]; // store first elemnt in row
         // shift row left
         for (int y = 1; y < board_size; y++)
         {
-            board[INDEX(clicked_x, y)] = board[INDEX(clicked_x, y-1)];
+            board[INDEX(clicked_x, y)] = board[INDEX(clicked_x, y+1)];
         }
         for (int x = 0; x < 4; x++) // move players from end of row
         {
@@ -282,7 +282,41 @@ void MazeBoard::rotateFreeStone()
 }
 
 
-void MazeBoard::makePath(std::vector<Coords> &start_pos)
+bool MazeBoard::onBoard(Coords pos)
 {
-    start_pos[0];
+    if (pos.x > 0 && pos.x <= board_size && pos.y > 0 && pos.y <= board_size)
+        return true;
+    return false;
+}
+
+
+
+// typedef enum {RIGHT, DOWN, LEFT, UP} Direction;
+
+
+// RECURSION
+bool MazeBoard::checkPath(Coords start_pos, Coords end_pos)
+{
+    if (start_pos == end_pos)
+        return true;
+
+    // expand to right
+    if (board[INDEX_C(start_pos)].canGo(RIGHT) && onBoard(start_pos.right())
+        && board[INDEX_C(start_pos.right())].canGo(LEFT)
+        && checkPath(start_pos.right(), end_pos))
+            return true;
+    else if (board[INDEX_C(start_pos)].canGo(DOWN) && onBoard(start_pos.down())
+        && board[INDEX_C(start_pos.down())].canGo(UP)
+        && checkPath(start_pos.down(), end_pos))
+            return true;
+    else if (board[INDEX_C(start_pos)].canGo(LEFT) && onBoard(start_pos.left())
+        && board[INDEX_C(start_pos.left())].canGo(RIGHT)
+        && checkPath(start_pos.left(), end_pos))
+            return true;
+    else if (board[INDEX_C(start_pos)].canGo(UP) && onBoard(start_pos.up())
+        && board[INDEX_C(start_pos.up())].canGo(DOWN)
+        && checkPath(start_pos.up(), end_pos))
+            return true;
+
+    return false;
 }

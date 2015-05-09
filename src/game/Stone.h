@@ -20,6 +20,11 @@ public:
     }
     Coords() = default;
     Coords(const int _x, const int _y) : x(_x), y(_y) {}
+
+    inline Coords right() { return Coords(x, y+1); }
+    inline Coords down() { return Coords(x+1, y); }
+    inline Coords left() { return Coords(x, y-1); }
+    inline Coords up() { return Coords(x-1, y); }
 };
 
 typedef enum {I, L, T} StoneType;
