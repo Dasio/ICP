@@ -30,7 +30,7 @@ $(OBJ_DIR)/$(GAME_DIR)/%.o: $(SRC_DIR)/$(GAME_DIR)/%.cpp
 doxygen:
 	doxygen Doxyfile
 zip:
-	zip $(ZIP_FILE) Makefile ./src/* ./gui/* Doxyfile
+	zip -r $(ZIP_FILE) Makefile ./src/* ./gui/* Doxyfile Readme.txt
 clean:
 	rm -rf $(BIN_DIR) $(OBJ_DIR) $(QMAKE_DIR) $(DOC_DIR) $(ZIP_FILE)
 .PHONY: build gui cli clean zip

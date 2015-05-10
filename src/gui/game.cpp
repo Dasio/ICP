@@ -310,8 +310,8 @@ void GameGUI::spawnPlayer(int id, int x, int y, int off)
 
     }
 
-    player.setDevicePixelRatio(1.5);
     playersPixmap[id-1] = scene->addPixmap(player);
+    playersPixmap[id-1]->setScale(0.6);
     QPointF pos = getCoords(x,y,true);
     playersPixmap[id-1]->setPos(pos.x() + off,pos.y() + 10);
 }
