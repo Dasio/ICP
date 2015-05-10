@@ -22,6 +22,7 @@ public:
     int score;
     Coords position;
 
+    Player() : name{}, score{0}, position{} {}
     Player(const std::string &player_name): name(player_name),score(0) {}
 };
 
@@ -78,6 +79,7 @@ private:
 
     std::string *winner;
 
+    void streamToState(std::fstream &stream);
     void stateToStream(std::fstream &stream);
 
     // try to move player to the coordinates [x,y]

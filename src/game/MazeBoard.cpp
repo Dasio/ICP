@@ -250,7 +250,7 @@ bool MazeBoard::shift(int clicked_x, int clicked_y)
             if (temp.player_slots[x])
             {
                 free_stone.player_slots[x] = temp.player_slots[x];
-                (free_stone.player_slots[x])->x = 1; // change players x position
+                (free_stone.player_slots[x])->y = 1; // change players x position
                 temp.player_slots[x] = nullptr;
             }
         }
@@ -279,7 +279,7 @@ bool MazeBoard::shift(int clicked_x, int clicked_y)
             if (temp.player_slots[x])
             {
                 free_stone.player_slots[x] = temp.player_slots[x];
-                (free_stone.player_slots[x])->x = board_size; // change players x position
+                (free_stone.player_slots[x])->y = board_size; // change players x position
                 temp.player_slots[x] = nullptr;
             }
         }

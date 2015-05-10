@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include <cstring>
 
 #include "Game.h"
 
@@ -69,9 +70,16 @@ bool Game::initialize(int board_size, int treasure_count)
     max_score = treasure_count / players.size();
     winner = nullptr;
 
+    std::fstream fs("gamedata.bin", std::fstream::out | std::fstream::binary | std::fstream::trunc);
+    stateToStream(fs);
+    fs.close();
+    fs.open("gamedata.bin", std::fstream::in | std::fstream::binary);
+    streamToState(fs);
+    fs.close();
+    //std::cout << "sizeof: " << sizeof(int) << std::endl;
+    //std::cout << "sizeof: " << sizeof(players[0]) << std::endl;
+
     return true;
-
-
 }
 
 
@@ -185,6 +193,78 @@ bool Game::loadGame(std::string file_name)
     }
 
     return false;
+}
+
+
+void Game::streamToState(std::fstream &stream)
+{
+    /*
+    size_t count;
+    size_t char_cnt;
+    std::string temp_string;
+
+    stream >> count;
+    card_pack.resize(count);
+    stream.read(reinterpret_cast<char*>(&card_pack[0]), count*sizeof(card_pack[0]));
+    std::cout << count << std::endl;
+
+    stream >> count;
+    players.clear();
+    players.resize(count);
+    for (size_t x = 0; x < count; x++)
+    {
+        stream >> char_cnt;
+        std::cout << char_cnt << std::endl;
+        char temp_arr[char_cnt];
+        stream.read(temp_arr, char_cnt*sizeof(char));
+        players[x].name = temp_arr;
+
+        stream >> players[x].score;
+        stream >> players[x].position.x;
+        stream >> players[x].position.y;
+    }
+    std::cout << count << std::endl;
+
+    for (size_t x = 0; x < count; x++)
+    {
+        std::cout << players[x].name << std::endl;
+    }
+
+
+    */
+
+
+}
+
+
+
+void Game::stateToStream(std::fstream &stream)
+{
+    /*
+
+    std::vector<Player> players;
+
+    int player_on_turn;
+    Action next_action;
+    int max_score;
+
+
+    std::string *winner;
+
+       stream << reinterpret_cast<size_t>(card_pack.size());
+    stream.write(reinterpret_cast<const char*>(&card_pack[0]), card_pack.size()*sizeof(card_pack[0]));
+
+    stream << reinterpret_cast<size_t>(players.size());
+    for (size_t x = 0; x < players.size(); x++)
+    {
+        stream << reinterpret_cast<size_t>(players[x].name.size());
+        stream.write(players[x].name.c_str(), players[x].name.size()*sizeof(char));
+        stream << players[x].score;
+        stream << players[x].position.x;
+        stream << players[x].position.y;
+    }
+    */
+
 }
 
 
