@@ -8,6 +8,9 @@
 #ifndef MAZEBOARD_H
 #define MAZEBOARD_H
 
+
+#include <boost/serialization/vector.hpp>
+
 #include <vector>
 #include "Stone.h"
 
@@ -103,6 +106,16 @@ public:
 
 
 private:
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive &ar, unsigned /*version*/)
+    {
+        ar & BOOST_SERIALIZATION_NVP(board_size);
+        ar & BOOST_SERIALIZATION_NVP(board);
+        ar & BOOST_SERIALIZATION_NVP(free_stone);
+        ar & BOOST_SERIALIZATION_NVP(forbidden_shift);
+    }
+
     int board_size; // = N ... (map size is N*N)
     std::vector<Stone> board;
 

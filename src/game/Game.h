@@ -8,6 +8,10 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <boost/serialization/string.hpp>
+#include <boost/archive/xml_iarchive.hpp>
+#include <boost/archive/xml_oarchive.hpp>
+
 #include <string>
 #include <vector>
 #include <fstream>
@@ -24,6 +28,16 @@ public:
 
     Player() : name{}, score{0}, position{} {}
     Player(const std::string &player_name): name(player_name),score(0) {}
+
+private:
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive &ar, unsigned /*version*/)
+    {
+        ar & BOOST_SERIALIZATION_NVP(name);
+        ar & BOOST_SERIALIZATION_NVP(score);
+        ar & BOOST_SERIALIZATION_NVP(position);
+    }
 };
 
 
@@ -132,13 +146,25 @@ public:
 private:
     // TODO: vector of DATA CONTAINERS (streams?) with game_state for UNDO
 
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive &ar, unsigned /*version*/)
+    {
+        ar & BOOST_SERIALIZATION_NVP(card_pack);
+        ar & BOOST_SERIALIZATION_NVP(players);
+
+        ar & BOOST_SERIALIZATION_NVP(player_on_turn);
+        ar & BOOST_SERIALIZATION_NVP(next_action);
+        ar & BOOST_SERIALIZATION_NVP(max_score);
+        ar & BOOST_SERIALIZATION_NVP(winner);
+    }
+
     std::vector<int> card_pack;
     std::vector<Player> players;
 
     int player_on_turn;
     Action next_action;
     int max_score;
-
     std::string *winner;
 
     /**

@@ -7,6 +7,9 @@
 #ifndef STONE_H
 #define STONE_H
 
+#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/nvp.hpp>
+
 
 class Coords
 {
@@ -41,7 +44,6 @@ public:
     StoneType type;  // type of the stone (I | L | T)
     int rotation;    // rotation clockwise (0 = 0°, 1 = 90°, 2 = 180°, 3 = 270°)
     int treasure;
-
     Coords* player_slots[4]; // max. 4 players on the stone
 
     /**
@@ -54,6 +56,17 @@ public:
     Stone() : type{I}, rotation{0}, treasure{0}, player_slots{0} {}
     Stone(const StoneType new_type, const int rot=0)
         : type{new_type}, rotation{rot}, treasure{0}, player_slots{0} {}
+
+private:
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive &ar, unsigned /*version*/)
+    {
+        ar & BOOST_SERIALIZATION_NVP(type);
+        ar & BOOST_SERIALIZATION_NVP(rotation);
+        ar & BOOST_SERIALIZATION_NVP(treasure);
+        ar & BOOST_SERIALIZATION_NVP(player_slots);
+    }
 };
 
 

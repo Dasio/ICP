@@ -171,11 +171,13 @@ int Game::actualCard()
 ////////////////////////////////////////// TODO
 bool Game::saveGame(std::string file_name)
 {
-    std::ofstream outfile (file_name, std::ofstream::binary);
+    std::ofstream ofs (file_name, std::ofstream::binary);
 
-    if (outfile.is_open())
+    if (ofs.is_open())
     {
-        outfile.close();
+        // make an archive (binary is not croos-platform portable)
+        boost::archive::xml_oarchive boa(ofs);
+        //boa << s;
     }
 
     return true;
@@ -185,12 +187,13 @@ bool Game::saveGame(std::string file_name)
 ////////////////////////////////////////// TODO
 bool Game::loadGame(std::string file_name)
 {
-    std::ifstream infile (file_name, std::ofstream::binary);
+    std::ifstream ifs (file_name, std::ofstream::binary);
 
-    if (infile.is_open())
+    if (ifs.is_open())
     {
-        infile.close();
+
     }
+    // place player positions to the stones on board
 
     return false;
 }
