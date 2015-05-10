@@ -21,24 +21,84 @@
 class MazeBoard
 {
 public:
+    /**
+     * @brief initialize
+     * @param board_size
+     */
     void initialize(int board_size);
+
+    /**
+     * @brief addTreasures
+     * @param treasure_count
+     * @return
+     */
     bool addTreasures(int treasure_count);
+
+    /**
+     * @brief addPlayers
+     * @param player_positions
+     * @return
+     */
     bool addPlayers(std::vector<Coords*> &player_positions);
 
+    /**
+     * @brief shift
+     * @param x
+     * @param y
+     * @return
+     */
     bool shift(int x, int y);
+
+    /**
+     * @brief rotateFreeStone by 90 clockwise
+     */
     void rotateFreeStone();
 
+    /**
+     * @brief Get stone from board by [x,y]
+     * @param x
+     * @param y
+     * @return Stone
+     */
     inline Stone get(int x, int y) { return board[INDEX(x,y)]; }
+
+    /**
+     * @brief getFreeStone
+     * @return Free stone
+     */
     inline Stone getFreeStone() { return free_stone; }
+
+    /**
+     * @brief getSize
+     * @return size
+     */
     inline int getSize() { return board_size; }
 
-    // check if position is on the board
+    /**
+     * @brief onBoard
+     * @param pos
+     * @return True if position is on the board
+     */
     inline bool onBoard(Coords pos);
 
-    // check if there is possible path from start_pos to end_pos
+    /**
+     * @brief checkPath
+     * @param start_pos
+     * @param end_pos
+     * @param open_queue
+     * @return True if there is possible path from start_pos to end_pos
+     */
     bool checkPath(Coords start_pos, Coords end_pos, std::vector<Coords> &open_queue);
 
-    // move player - returns true if treasure was collectet (USE CAREFULLY)
+
+    /**
+     * @brief movePlayer
+     * @param start_pos
+     * @param end_pos
+     * @param id
+     * @param treasure
+     * @return true if treasure was collected
+     */
     bool movePlayer(Coords start_pos, Coords end_pos, int id, int treasure);
 
 

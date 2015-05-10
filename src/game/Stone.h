@@ -44,9 +44,14 @@ public:
 
     Coords* player_slots[4]; // max. 4 players on the stone
 
+    /**
+     * @brief canGo
+     * @param dir
+     * @return
+     */
     bool canGo(Direction dir);
 
-    Stone() : type{I}, rotation{0}, treasure{0}, player_slots{0} {};
+    Stone() : type{I}, rotation{0}, treasure{0}, player_slots{0} {}
     Stone(const StoneType new_type, const int rot=0)
         : type{new_type}, rotation{rot}, treasure{0}, player_slots{0} {}
 };

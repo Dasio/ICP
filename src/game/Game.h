@@ -35,36 +35,98 @@ class Game
 public:
     MazeBoard labyrinth;
 
-    // initialize board, fill with stones, with treasures and randomize players positions
-    // there must be minimum of 4 players in the game
+    /**
+     * @brief Initialize board, fill with stones, with treasures and randomize players positions
+     * here must be minimum of 4 players in the game
+     * @param board_size
+     * @param treasure_count
+     * @return true if was successfully initialized, otherwise false
+     */
     bool initialize(int board_size = 7, int treasure_count = 12);
 
-    // create new player - return his number or -1 if there are already 4 players
+    /**
+     * @brief Create new player
+     * @param Player name name
+     * @return Player number or -1 if there are already 4 players
+     */
     int addPlayer(std::string name);
 
-
+    /**
+     * @brief getPlayerName
+     * @param Player ID
+     * @return Player name
+     */
     std::string getPlayerName(uint id);
+
+    /**
+     * @brief getPlayerScore
+     * @param Player ID
+     * @return Player score
+     */
     int getPlayerScore(uint id);
+
+    /**
+     * @brief getMaxScore
+     * @return Score for win
+     */
     inline int getMaxScore() { return max_score; }
 
+    /**
+     * @brief getPlayersCount
+     * @return How many players are playing
+     */
     inline int getPlayersCount() { return players.size(); }
 
-    // click to the gameboard and take an action if it is allowed
+    /**
+     * @brief Click to the gameboard and take an action if it is allowed
+     * @param x
+     * @param y
+     * @return true if action was allowed, otherwise false
+     */
     bool clickBoard(int x, int y);
 
+    /**
+     * @brief checkWinner
+     * @return nullptr if there is no winner, else pointer to player name
+     */
     inline std::string* checkWinner() { return winner; }
 
-    // return int representing the treasure on the top of card_pack
-    // returns 0 if pack is empty
+    /**
+     * @brief actualCard
+     * @return int representing the treasure on the top of card_pack, 0 if pack is empty
+     */
     int actualCard();
 
+    /**
+     * @brief activePlayer
+     * @return Player ID
+     */
     inline int activePlayer() { return player_on_turn; }
+
+    /**
+     * @brief nextAction
+     * @return Action which player is going to make
+     */
     inline Action nextAction() { return next_action; }
 
-    // save or load game
+    /**
+     * @brief saveGame
+     * @param file_name
+     * @return
+     */
     bool saveGame(std::string file_name);
+
+    /**
+     * @brief loadGame
+     * @param file_name
+     * @return
+     */
     bool loadGame(std::string file_name);
 
+    /**
+     * @brief undo
+     * @return
+     */
     bool undo();
 
 private:
@@ -79,10 +141,24 @@ private:
 
     std::string *winner;
 
+    /**
+     * @brief streamToState
+     * @param stream
+     */
     void streamToState(std::fstream &stream);
+
+    /**
+     * @brief stateToStream
+     * @param stream
+     */
     void stateToStream(std::fstream &stream);
 
-    // try to move player to the coordinates [x,y]
+    /**
+     * @brief try to move player to the coordinates [x,y]
+     * @param x
+     * @param y
+     * @return True if it was successful
+     */
     bool tryMovePlayer(int x, int y);
 };
 
