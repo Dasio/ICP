@@ -109,8 +109,18 @@ private:
      */
     void actualizeStatus();
 
+    /**
+     * @brief drawFreeStone
+     */
     void drawFreeStone();
 
+    /**
+     * @brief Transform real coords to grid coords and vice-versa
+     * @param x
+     * @param y
+     * @param false = real->grid, true = grid->real
+     * @return coords
+     */
     QPointF getCoords(int x, int y,bool right);
     std::vector<QPixmap> _playerSprite;
     Ui::Game *ui;
@@ -137,8 +147,11 @@ public:
     }
 private:
     GameGUI* _game;
+    /**
+     * @brief Get coords of stone from scene
+     * @param mouse event
+     */
     void mousePressEvent(QMouseEvent *event);
-    bool _hover;
 
 };
 #endif // GAMEGUI_H
