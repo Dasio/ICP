@@ -3,11 +3,20 @@
  * Peter Hostačný   (xhosta03)
  */
 
-#include <iostream>
+
 //static const char *shape[] = {"I", "L", "T"};
 
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
+
+#include <boost/archive/xml_iarchive.hpp>
+#include <boost/archive/xml_oarchive.hpp>
 
 #include <fstream>
+
 #include <algorithm>
 #include <random>
 #include <chrono>
@@ -68,16 +77,10 @@ bool Game::initialize(int board_size, int treasure_count)
     next_action = SHIFT;
     player_on_turn = 0;
     max_score = treasure_count / players.size();
-    winner = nullptr;
+    winner = -1;
 
-    std::fstream fs("gamedata.bin", std::fstream::out | std::fstream::binary | std::fstream::trunc);
-    stateToStream(fs);
-    fs.close();
-    fs.open("gamedata.bin", std::fstream::in | std::fstream::binary);
-    streamToState(fs);
-    fs.close();
-    //std::cout << "sizeof: " << sizeof(int) << std::endl;
-    //std::cout << "sizeof: " << sizeof(players[0]) << std::endl;
+
+    std::stringstream ss;
 
     return true;
 }
@@ -139,6 +142,15 @@ bool Game::clickBoard(int x, int y)
 }
 
 
+const std::string* Game::checkWinner()
+{
+    if (winner >= 0 && winner <= 4)
+        return &(players[winner].name);
+    return nullptr;
+}
+
+
+
 bool Game::tryMovePlayer(int x, int y)
 {
     Player *act_player = &(players[player_on_turn]);
@@ -149,8 +161,9 @@ bool Game::tryMovePlayer(int x, int y)
         if (labyrinth.movePlayer(act_player->position, Coords(x,y), player_on_turn, actualCard()))
         {   //treasure was collected
             card_pack.pop_back();
-            if (++(act_player->score) == max_score)  // add score - check winner
-                winner = &(act_player->name);
+            // add score and check winner if there isn't any already
+            if (++(act_player->score) >= max_score && winner == -1)
+                winner = player_on_turn;
         }
         return true;
     }
@@ -171,13 +184,11 @@ int Game::actualCard()
 ////////////////////////////////////////// TODO
 bool Game::saveGame(std::string file_name)
 {
-    std::ofstream ofs (file_name, std::ofstream::binary);
+    std::ofstream ofs (file_name, std::ofstream::trunc);
 
     if (ofs.is_open())
     {
-        // make an archive (binary is not croos-platform portable)
-        boost::archive::xml_oarchive boa(ofs);
-        //boa << s;
+        saveState(ofs, XML);
     }
 
     return true;
@@ -187,87 +198,89 @@ bool Game::saveGame(std::string file_name)
 ////////////////////////////////////////// TODO
 bool Game::loadGame(std::string file_name)
 {
-    std::ifstream ifs (file_name, std::ofstream::binary);
+    std::ifstream ifs (file_name/*, std::ofstream::binary*/);
 
     if (ifs.is_open())
     {
-
+        // try and catch exceptions
+        loadState(ifs, XML);
     }
-    // place player positions to the stones on board
+
+    //////////////////////////// TODO check data ....
+    //////////initialize undo history (clear stack)
+    // place player positions to the stones on board if needed
 
     return false;
 }
 
 
-void Game::streamToState(std::fstream &stream)
+void Game::saveState(std::ostream &stream, Format type)
 {
-    /*
-    size_t count;
-    size_t char_cnt;
-    std::string temp_string;
 
-    stream >> count;
-    card_pack.resize(count);
-    stream.read(reinterpret_cast<char*>(&card_pack[0]), count*sizeof(card_pack[0]));
-    std::cout << count << std::endl;
-
-    stream >> count;
-    players.clear();
-    players.resize(count);
-    for (size_t x = 0; x < count; x++)
+    // make an archive (binary is not croos-platform portable)
+    // xml for acces to state of saved game outside app
+    switch (type)
     {
-        stream >> char_cnt;
-        std::cout << char_cnt << std::endl;
-        char temp_arr[char_cnt];
-        stream.read(temp_arr, char_cnt*sizeof(char));
-        players[x].name = temp_arr;
-
-        stream >> players[x].score;
-        stream >> players[x].position.x;
-        stream >> players[x].position.y;
+        case TXT:
+        {
+            boost::archive::text_oarchive toa(stream, boost::archive::no_header);
+            toa << boost::serialization::make_nvp("Game", *this);
+            break;
+        }
+        case BIN:
+        {
+            boost::archive::binary_oarchive boa(stream, boost::archive::no_header);
+            boa << boost::serialization::make_nvp("Game", *this);
+            break;
+        }
+        case XML:
+        {
+            boost::archive::xml_oarchive xoa(stream, boost::archive::no_header);
+            xoa << boost::serialization::make_nvp("Game", *this);
+            break;
+        }
+        default:
+            break;
     }
-    std::cout << count << std::endl;
-
-    for (size_t x = 0; x < count; x++)
-    {
-        std::cout << players[x].name << std::endl;
-    }
-
-
-    */
-
 
 }
 
 
-
-void Game::stateToStream(std::fstream &stream)
+void Game::loadState(std::istream &stream, Format type)
 {
-    /*
-
-    std::vector<Player> players;
-
-    int player_on_turn;
-    Action next_action;
-    int max_score;
-
-
-    std::string *winner;
-
-       stream << reinterpret_cast<size_t>(card_pack.size());
-    stream.write(reinterpret_cast<const char*>(&card_pack[0]), card_pack.size()*sizeof(card_pack[0]));
-
-    stream << reinterpret_cast<size_t>(players.size());
-    for (size_t x = 0; x < players.size(); x++)
+    switch (type)
     {
-        stream << reinterpret_cast<size_t>(players[x].name.size());
-        stream.write(players[x].name.c_str(), players[x].name.size()*sizeof(char));
-        stream << players[x].score;
-        stream << players[x].position.x;
-        stream << players[x].position.y;
+        case TXT:
+        {
+            boost::archive::text_iarchive tia(stream, boost::archive::no_header);
+            tia >> boost::serialization::make_nvp("Game", *this);
+            break;
+        }
+        case BIN:
+        {
+            boost::archive::binary_iarchive bia(stream, boost::archive::no_header);
+            bia >> boost::serialization::make_nvp("Game", *this);
+            break;
+        }
+        case XML:
+        {
+            boost::archive::xml_iarchive xia(stream, boost::archive::no_header);
+            xia >> boost::serialization::make_nvp("Game", *this);
+            break;
+        }
+        default:
+            break;
     }
-    */
+}
+
+
+void Game::undo()
+{
 
 }
 
 
+bool Game::canUndo()
+{
+    return false;
+}

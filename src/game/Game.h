@@ -9,12 +9,11 @@
 #define GAME_H
 
 #include <boost/serialization/string.hpp>
-#include <boost/archive/xml_iarchive.hpp>
-#include <boost/archive/xml_oarchive.hpp>
 
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <fstream>
 
 #include "MazeBoard.h"
 
@@ -42,6 +41,7 @@ private:
 
 
 typedef enum {MOVE, SHIFT} Action;
+typedef enum {TXT, BIN, XML} Format;
 
 
 class Game
@@ -103,7 +103,7 @@ public:
      * @brief checkWinner
      * @return nullptr if there is no winner, else pointer to player name
      */
-    inline std::string* checkWinner() { return winner; }
+    const std::string* checkWinner();
 
     /**
      * @brief actualCard
@@ -139,9 +139,14 @@ public:
 
     /**
      * @brief undo
-     * @return
      */
-    bool undo();
+    void undo();
+
+    /**
+     * @brief undo
+     */
+    bool canUndo();
+
 
 private:
     // TODO: vector of DATA CONTAINERS (streams?) with game_state for UNDO
@@ -157,6 +162,8 @@ private:
         ar & BOOST_SERIALIZATION_NVP(next_action);
         ar & BOOST_SERIALIZATION_NVP(max_score);
         ar & BOOST_SERIALIZATION_NVP(winner);
+
+        ar & BOOST_SERIALIZATION_NVP(labyrinth);
     }
 
     std::vector<int> card_pack;
@@ -165,19 +172,21 @@ private:
     int player_on_turn;
     Action next_action;
     int max_score;
-    std::string *winner;
+    int winner; // id of the winner (index to vector players)
 
     /**
-     * @brief streamToState
+     * @brief loadState
      * @param stream
+     * @param type
      */
-    void streamToState(std::fstream &stream);
+    void saveState(std::ostream &stream, Format type);
 
     /**
-     * @brief stateToStream
+     * @brief loadState
      * @param stream
+     * @param type
      */
-    void stateToStream(std::fstream &stream);
+    void loadState(std::istream &stream, Format type);
 
     /**
      * @brief try to move player to the coordinates [x,y]

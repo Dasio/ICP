@@ -25,13 +25,22 @@ public:
     {
         return (x != other.x || y != other.y);
     }
-    Coords() = default;
+    Coords() : x{0}, y{0} {}
     Coords(const int _x, const int _y) : x(_x), y(_y) {}
 
     inline Coords right() { return Coords(x, y+1); }
     inline Coords down() { return Coords(x+1, y); }
     inline Coords left() { return Coords(x, y-1); }
     inline Coords up() { return Coords(x-1, y); }
+
+private:
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive &ar, unsigned /*version*/)
+    {
+        ar & BOOST_SERIALIZATION_NVP(x);
+        ar & BOOST_SERIALIZATION_NVP(y);
+    }
 };
 
 typedef enum {I, L, T} StoneType;

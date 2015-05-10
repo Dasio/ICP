@@ -255,7 +255,7 @@ int GameGUI::stoneToImgIndex(Stone &stone)
             {
                 case 0:
                 case 2:
-                    return 0;    
+                    return 0;
                 default:
                     return 1;
             }
@@ -348,7 +348,7 @@ void GameGUI::clicked(QPointF pos)
         if(gameLogic.clickBoard(rpos.y(),rpos.x()))
         {
             ui->infoLabel->setText("OK");
-            std::string *winner = gameLogic.checkWinner();
+            const std::string *winner = gameLogic.checkWinner();
             // End game
             if(winner != nullptr)
             {

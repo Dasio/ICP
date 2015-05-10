@@ -11,7 +11,7 @@ ZIP_FILE = xmikus15_xhosta03.zip
 
 CXX = g++
 CFLAGS = -Wall -Wextra -std=c++11 -g -Ofast
-LDFLAGS = -lboost_system -lboost_serialization
+LDFLAGS = -lboost_serialization
 
 GAME_SRCS = $(wildcard $(SRC_DIR)/$(GAME_DIR)/*.cpp)
 GAME_OBJS = $(patsubst $(SRC_DIR)/$(GAME_DIR)/%.cpp, $(OBJ_DIR)/$(GAME_DIR)/%.o, $(GAME_SRCS))
