@@ -12,7 +12,7 @@ TARGET = labyrinth2015
 TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++11
 
-LIBS += -lboost_serialization
+LIBS += -lboost_system -lboost_serialization
 
 SOURCES += ../src/gui/main.cpp\
         ../src/gui/mainwindow.cpp \

@@ -11,7 +11,7 @@ ZIP_FILE = xmikus15_xhosta03.zip
 
 CXX = g++
 CFLAGS = -Wall -Wextra -std=c++11 -g -Ofast
-LDFLAGS = -lboost_serialization
+LDFLAGS = -lboost_system -lboost_serialization
 
 GAME_SRCS = $(wildcard $(SRC_DIR)/$(GAME_DIR)/*.cpp)
 GAME_OBJS = $(patsubst $(SRC_DIR)/$(GAME_DIR)/%.cpp, $(OBJ_DIR)/$(GAME_DIR)/%.o, $(GAME_SRCS))
@@ -20,10 +20,10 @@ build: cli gui
 
 cli: $(GAME_OBJS)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(CFLAGS) $(LDFLAGS) $^ -o $(BIN_DIR)/$(BIN_GAME)
+	$(CXX) $(CFLAGS)  $^ -o $(BIN_DIR)/$(BIN_GAME) $(LDFLAGS)
 gui:
 	@cd $(GUI_DIR) && qmake -o ../$(QMAKE_DIR)/Makefile
-	$(MAKE) CXX=$(CXX) $(LDFLAGS) -C $(QMAKE_DIR)
+	$(MAKE) CXX=$(CXX) -C $(QMAKE_DIR)
 
 $(OBJ_DIR)/$(GAME_DIR)/%.o: $(SRC_DIR)/$(GAME_DIR)/%.cpp
 	@mkdir -p $(OBJ_DIR)/$(GAME_DIR)
