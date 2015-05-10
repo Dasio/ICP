@@ -189,9 +189,10 @@ bool Game::saveGame(std::string file_name)
     if (ofs.is_open())
     {
         saveState(ofs, XML);
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -204,11 +205,11 @@ bool Game::loadGame(std::string file_name)
     {
         // try and catch exceptions
         loadState(ifs, XML);
+        return true;
+        //////////////////////////// TODO check data ....
+        //////////initialize undo history (clear stack)
+        // place player positions to the stones on board if needed
     }
-
-    //////////////////////////// TODO check data ....
-    //////////initialize undo history (clear stack)
-    // place player positions to the stones on board if needed
 
     return false;
 }
