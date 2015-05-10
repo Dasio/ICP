@@ -131,6 +131,8 @@ void GameGUI::actualizeStatus()
         ui->actionLabel->setText("Move");
     else
         ui->actionLabel->setText("Shift");
+    // Set undo button
+    ui->undoButton->setEnabled(gameLogic.canUndo());
 
 }
 
@@ -418,7 +420,8 @@ void GameGUI::on_saveButton_clicked()
 
 void GameGUI::on_undoButton_clicked()
 {
-    qDebug() << "undo";
+    gameLogic.undo();
+    redrawScene();
 }
 
 void GameGUI::on_exitButton_clicked()
