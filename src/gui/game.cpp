@@ -220,7 +220,7 @@ void GameGUI::drawFreeStone()
     QGraphicsPixmapItem *pm;
     if(stone.treasure)
     {
-        pm = scene->addPixmap(_cardsImg[stone.treasure]);
+        pm = scene->addPixmap(_cardsImg[stone.treasure-1]);
         pm->setScale(0.35);
         pm->setPos(x+10,pos.y()+17);
     }
@@ -237,7 +237,7 @@ void GameGUI::drawCard()
 {
     int N = gameLogic.labyrinth.getSize();
     QPointF pos = getCoords(N,1,true);
-    QGraphicsPixmapItem *pm = scene->addPixmap(_cardsImg[gameLogic.actualCard()]);
+    QGraphicsPixmapItem *pm = scene->addPixmap(_cardsImg[gameLogic.actualCard()-1]);
     int x = pos.x() + 90;
     xPos.insert(boost::bimap<int,int>::value_type(x,-2));
     yPos.insert(boost::bimap<int,int>::value_type(pos.y(),-2));
