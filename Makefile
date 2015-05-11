@@ -10,7 +10,7 @@ QMAKE_DIR = qmake
 ZIP_FILE = xmikus15_xhosta03.zip
 
 CXX = g++
-CFLAGS = -Wall -Wextra -std=c++11 -g -Ofast
+CFLAGS = -Wall -Wextra -std=c++11 -g -Ofast -static-libstdc++
 LDFLAGS = -lboost_serialization
 
 GAME_SRCS = $(wildcard $(SRC_DIR)/$(GAME_DIR)/*.cpp)
