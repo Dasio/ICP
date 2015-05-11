@@ -242,7 +242,7 @@ bool MazeBoard::shift(int clicked_x, int clicked_y)
             for (int i = 0; i < 4; i++)
             {
                 if (board[INDEX(clicked_x, y)].player_slots[i])
-                   *(board[INDEX(clicked_x, y)].player_slots[i]) = Coords(clicked_x, y);
+                    *(board[INDEX(clicked_x, y)].player_slots[i]) = Coords(clicked_x, y);
             }
         }
         for (int x = 0; x < 4; x++) // move players from end of row

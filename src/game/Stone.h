@@ -62,7 +62,7 @@ public:
      */
     bool canGo(Direction dir);
 
-    Stone() : type{I}, rotation{0}, treasure{0}, player_slots{0} {}
+    Stone() : type{I}, rotation{0}, treasure{0}, player_slots{nullptr} {}
     Stone(const StoneType new_type, const int rot=0)
         : type{new_type}, rotation{rot}, treasure{0}, player_slots{0} {}
 
@@ -74,7 +74,9 @@ private:
         ar & BOOST_SERIALIZATION_NVP(type);
         ar & BOOST_SERIALIZATION_NVP(rotation);
         ar & BOOST_SERIALIZATION_NVP(treasure);
-        ar & BOOST_SERIALIZATION_NVP(player_slots);
+
+        // not serializing correctly - must renew manually from players vector
+        //ar & BOOST_SERIALIZATION_NVP(player_slots);
     }
 };
 

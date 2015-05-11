@@ -6,8 +6,8 @@
 
 //static const char *shape[] = {"I", "L", "T"};
 
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
+//#include <boost/archive/text_iarchive.hpp>
+//#include <boost/archive/text_oarchive.hpp>
 
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
@@ -222,12 +222,12 @@ void Game::saveState(std::ostream &stream, Format type)
     // xml for acces to state of saved game outside app
     switch (type)
     {
-        case TXT:
+        /*case TXT:
         {
             boost::archive::text_oarchive toa(stream, boost::archive::no_header);
             toa << boost::serialization::make_nvp("Game", *this);
             break;
-        }
+        }*/
         case BIN:
         {
             boost::archive::binary_oarchive boa(stream, boost::archive::no_header);
@@ -243,7 +243,6 @@ void Game::saveState(std::ostream &stream, Format type)
         default:
             break;
     }
-
 }
 
 
@@ -251,12 +250,12 @@ void Game::loadState(std::istream &stream, Format type)
 {
     switch (type)
     {
-        case TXT:
+        /*case TXT:
         {
             boost::archive::text_iarchive tia(stream, boost::archive::no_header);
             tia >> boost::serialization::make_nvp("Game", *this);
             break;
-        }
+        }*/
         case BIN:
         {
             boost::archive::binary_iarchive bia(stream, boost::archive::no_header);
@@ -272,6 +271,12 @@ void Game::loadState(std::istream &stream, Format type)
         default:
             break;
     }
+
+    // validating pointers to player positions
+    std::vector<Coords*> player_positions;
+    for (uint x = 0; x < players.size(); x++)
+        player_positions.push_back(&(players[x].position));
+    labyrinth.addPlayers(player_positions);
 }
 
 
