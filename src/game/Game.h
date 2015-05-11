@@ -14,6 +14,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <stack>
 
 #include "MazeBoard.h"
 
@@ -145,7 +146,7 @@ public:
     /**
      * @brief undo
      */
-    bool canUndo();
+    inline bool canUndo() { return !history.empty(); }
 
 
 private:
@@ -168,6 +169,7 @@ private:
 
     std::vector<int> card_pack;
     std::vector<Player> players;
+    std::stack<std::stringstream> history;
 
     int player_on_turn;
     Action next_action;

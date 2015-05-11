@@ -79,8 +79,9 @@ bool Game::initialize(int board_size, int treasure_count)
     max_score = treasure_count / players.size();
     winner = -1;
 
-
-    std::stringstream ss;
+    // save first state of the game for undo function
+    history.emplace();
+    saveState(history.top(), BIN);
 
     return true;
 }
@@ -125,6 +126,8 @@ bool Game::clickBoard(int x, int y)
         if (labyrinth.shift(x, y))
         {
             next_action = MOVE;
+            history.emplace(); // construct new empty element in the stack
+            saveState(history.top(), BIN); // save state of the game into the stack
             return true;
         }
     }
@@ -134,6 +137,8 @@ bool Game::clickBoard(int x, int y)
         {
             next_action = SHIFT;
             player_on_turn = (player_on_turn + 1) % players.size();
+            history.emplace(); // construct new empty element in the stack
+            saveState(history.top(), BIN); // save state of the game into the stack
             return true;
         }
     }
@@ -180,8 +185,7 @@ int Game::actualCard()
         return 0;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////// TODO
+
 bool Game::saveGame(std::string file_name)
 {
     std::ofstream ofs (file_name, std::ofstream::trunc);
@@ -195,22 +199,20 @@ bool Game::saveGame(std::string file_name)
     return false;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////// TODO
+
 bool Game::loadGame(std::string file_name)
 {
     std::ifstream ifs (file_name/*, std::ofstream::binary*/);
 
     if (ifs.is_open())
     {
-        // try and catch exceptions
+        // try and catch exceptions if problem occurs
         loadState(ifs, XML);
+        // remove undo history
+        while (!history.empty())
+            history.pop();
         return true;
-        //////////////////////////// TODO check data ....
-        //////////initialize undo history (clear stack)
-        // place player positions to the stones on board if needed
     }
-
     return false;
 }
 
@@ -282,11 +284,9 @@ void Game::loadState(std::istream &stream, Format type)
 
 void Game::undo()
 {
-
-}
-
-
-bool Game::canUndo()
-{
-    return false;
+    if (!history.empty())
+    {
+        loadState(history.top(), BIN);
+        history.pop();
+    }
 }
