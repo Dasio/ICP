@@ -86,6 +86,11 @@ private:
     void loadStones();
 
     /**
+     * @brief loadButtons
+     */
+    void loadButtons();
+
+    /**
      * @brief spawnPlayer
      * @param id
      * @param x
@@ -128,9 +133,9 @@ private:
     CustomView* _view;
     std::vector<QPixmap> _pathImg;
     std::vector<QPixmap> _cardsImg;
+    std::vector<QPixmap> _buttonsImg;
     std::vector<QGraphicsPixmapItem*> playersPixmap;
     Game &gameLogic;
-    std::vector<QPushButton*> _buttons;
     QGraphicsPixmapItem *freeStone;
 
 

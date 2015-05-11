@@ -43,4 +43,10 @@
         <file>art/viper.png</file>
         <file>art/lina.png</file>
     </qresource>
+    <qresource prefix="/buttons">
+        <file>art/shift_down.png</file>
+        <file>art/shift_left.png</file>
+        <file>art/shift_right.png</file>
+        <file>art/shift_up.png</file>
+    </qresource>
 </RCC>

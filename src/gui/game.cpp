@@ -32,6 +32,7 @@ GameGUI::GameGUI(QWidget *parent, Game &_gameLogic) :
     loadCardsImgs();
     drawScene();
     _view->fitInView(scene->itemsBoundingRect(), Qt::KeepAspectRatio);
+    _view->scale(1.25,1.25);
 
 }
 GameGUI::~GameGUI()
@@ -81,6 +82,15 @@ void GameGUI::loadCardsImgs()
 void GameGUI::loadStones()
 {
     loadPathImgs();
+    loadButtons();
+}
+
+void GameGUI::loadButtons()
+{
+    _buttonsImg.push_back(QPixmap(":/buttons/art/shift_down.png"));
+    _buttonsImg.push_back(QPixmap(":/buttons/art/shift_left.png"));
+    _buttonsImg.push_back(QPixmap(":/buttons/art/shift_up.png"));
+    _buttonsImg.push_back(QPixmap(":/buttons/art/shift_right.png"));
 }
 
 void GameGUI::redrawScene()
@@ -147,13 +157,15 @@ void GameGUI::drawScene()
     Stone stone;
     int imgX;
     int imgY;
+    int buttonX;
+    int buttonY;
     int playersOnStone;
     for(int y=1;y<=N;y++)
         for(int x=1;x<=N;x++)
         {
+
             // Get stone from board
             stone = gameLogic.labyrinth.get(y,x);
-            //qDebug() << x << ":" << y << " = " << stone.type << ":" << stone.rotation;
             pm = scene->addPixmap(_pathImg[stoneToImgIndex(stone)]);
             imgX = x * size;
             imgY = y * size;
@@ -162,6 +174,40 @@ void GameGUI::drawScene()
             yPos.insert(boost::bimap<int,int>::value_type(imgY,y));
             // Move it to right position
             pm->setPos(imgX,imgY);
+            // Draw buttons
+            if(x%2 == 0 && (y ==1 || y == N))
+            {
+                if(y == 1)
+                {
+                    pm = scene->addPixmap(_buttonsImg[0]);
+                    buttonY = imgY - size;
+                }
+                else if(y == N)
+                {
+                    pm = scene->addPixmap(_buttonsImg[2]);
+                    buttonY = imgY + size;
+
+                }
+                pm->setPos(imgX,buttonY);
+                xPos.insert(boost::bimap<int,int>::value_type(imgX,-x));
+                yPos.insert(boost::bimap<int,int>::value_type(buttonY,-y));
+            }
+            else if(y%2 == 0 && (x == 1 || x == N))
+            {
+                if(x == 1)
+                {
+                    pm = scene->addPixmap(_buttonsImg[3]);
+                    buttonX = imgX - size;
+                }
+                else if(x == N)
+                {
+                    pm = scene->addPixmap(_buttonsImg[1]);
+                    buttonX = imgX + size;
+                }
+                pm->setPos(buttonX,imgY);
+                xPos.insert(boost::bimap<int,int>::value_type(buttonX,-x));
+                yPos.insert(boost::bimap<int,int>::value_type(imgY,-y));
+            }
 
             // Draw treasure
             if(stone.treasure)
@@ -214,9 +260,9 @@ void GameGUI::drawFreeStone()
     freeStone = scene->addPixmap(_pathImg[stoneToImgIndex(stone)]);
     // Bimap for maping real position and grid position
     QPointF pos = getCoords(gameLogic.labyrinth.getSize(),mid,true);
-    int x = pos.x() + 100;
-    xPos.insert(boost::bimap<int,int>::value_type(x,-1));
-    yPos.insert(boost::bimap<int,int>::value_type(pos.y(),-1));
+    int x = pos.x() + 160;
+    xPos.insert(boost::bimap<int,int>::value_type(x,0));
+    yPos.insert(boost::bimap<int,int>::value_type(pos.y(),0));
     // Move it to right position
     freeStone->setPos(x,pos.y());
     QGraphicsPixmapItem *pm;
@@ -241,8 +287,8 @@ void GameGUI::drawCard()
     QPointF pos = getCoords(N,1,true);
     QGraphicsPixmapItem *pm = scene->addPixmap(_cardsImg[gameLogic.actualCard()-1]);
     int x = pos.x() + 90;
-    xPos.insert(boost::bimap<int,int>::value_type(x,-2));
-    yPos.insert(boost::bimap<int,int>::value_type(pos.y(),-2));
+    xPos.insert(boost::bimap<int,int>::value_type(x,20));
+    yPos.insert(boost::bimap<int,int>::value_type(pos.y(),20));
     pm->setPos(x, pos.y());
     pm->setScale(0.8);
 }
@@ -341,13 +387,13 @@ QPointF GameGUI::getCoords(int x, int y,bool right)
 void GameGUI::clicked(QPointF pos)
 {
     QPointF rpos = getCoords(pos.x(),pos.y(),false);
-    if(rpos.x() == -1)
+    if(rpos.x() == 0)
         qDebug() << "Free stone";
-    else if(rpos.x() == -2)
+    else if(rpos.x() == 20)
         qDebug() << "Card";
     else
     {
-        if(gameLogic.clickBoard(rpos.y(),rpos.x()))
+        if(gameLogic.clickBoard(abs(rpos.y()),abs(rpos.x())))
         {
             ui->infoLabel->setText("OK");
             const std::string *winner = gameLogic.checkWinner();
@@ -381,6 +427,7 @@ void CustomView::mousePressEvent(QMouseEvent *event)
     if(!_items.isEmpty())
     {
         item = _items.last();
+        // Pixmap
         if(item->type() == 7)
             _game->clicked(item->pos());
     }
