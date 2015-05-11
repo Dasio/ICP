@@ -55,6 +55,7 @@ void MainWindow::on_loadButton_clicked()
     QFileDialog dialog(this);
     // User have to choose file
     dialog.setFileMode(QFileDialog::ExistingFile);
+    dialog.setNameFilter("Save files (*.xml)");
     QString fileName;
     if(dialog.exec())
         fileName = dialog.selectedFiles()[0];

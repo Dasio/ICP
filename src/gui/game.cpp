@@ -442,6 +442,9 @@ void GameGUI::on_saveButton_clicked()
 {
     QFileDialog dialog(this);
     dialog.setFileMode(QFileDialog::AnyFile);
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setNameFilter("Save files (*.xml)");
+    dialog.setDefaultSuffix("xml");
     QString fileName;
     if(dialog.exec())
         fileName = dialog.selectedFiles()[0];
