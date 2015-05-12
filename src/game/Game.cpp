@@ -79,10 +79,6 @@ bool Game::initialize(int board_size, int treasure_count)
     max_score = treasure_count / players.size();
     winner = -1;
 
-    // save first state of the game for undo function
-    history.emplace();
-    saveState(history.top(), BIN);
-
     return true;
 }
 
@@ -121,13 +117,14 @@ bool Game::clickBoard(int x, int y)
     if (x <= 0 && x > labyrinth.getSize() && y <= 0 && y > labyrinth.getSize())
         return false;
 
+    history.emplace(); // construct new empty element in the stack
+    saveState(history.top(), BIN); // save state of the game into the stack
+
     if (next_action == SHIFT)
     {
         if (labyrinth.shift(x, y))
         {
             next_action = MOVE;
-            history.emplace(); // construct new empty element in the stack
-            saveState(history.top(), BIN); // save state of the game into the stack
             return true;
         }
     }
@@ -137,12 +134,12 @@ bool Game::clickBoard(int x, int y)
         {
             next_action = SHIFT;
             player_on_turn = (player_on_turn + 1) % players.size();
-            history.emplace(); // construct new empty element in the stack
-            saveState(history.top(), BIN); // save state of the game into the stack
+
             return true;
         }
     }
 
+    history.pop();
     return false;
 }
 
@@ -286,7 +283,7 @@ void Game::undo()
 {
     if (!history.empty())
     {
-        loadState(history.top(), BIN);
-        history.pop();
+        loadState(history.top(), BIN); // load state from history
+        history.pop(); // pop one state from history
     }
 }

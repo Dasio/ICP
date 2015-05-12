@@ -169,12 +169,14 @@ private:
 
     std::vector<int> card_pack;
     std::vector<Player> players;
-    std::stack<std::stringstream> history;
 
     int player_on_turn;
     Action next_action;
     int max_score;
     int winner; // id of the winner (index to vector players)
+
+    /* OBJECTS FOR UNDO FUNCTIONALITY */
+    std::stack<std::stringstream> history;
 
     /**
      * @brief loadState
