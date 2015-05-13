@@ -28,6 +28,8 @@ gui:
 $(OBJ_DIR)/$(GAME_DIR)/%.o: $(SRC_DIR)/$(GAME_DIR)/%.cpp
 	@mkdir -p $(OBJ_DIR)/$(GAME_DIR)
 	$(CXX) $(CFLAGS) $< -c -o $@
+run: gui
+	@cd $(BIN_DIR) && ./labyrinth2015
 doxygen:
 	doxygen Doxyfile
 zip:
