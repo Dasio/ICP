@@ -140,6 +140,7 @@ int main(/*int argc, char *argv[]*/)
         drawMap(game);
         std::cout << std::endl;
         printCardsAndPlayers(game);
+        std::cout << std::endl;
         std::cout << "Actual card: " << game.actualCard() << std::endl;
         std::cout << "On turn " << game.getPlayerName(game.activePlayer());
         if(game.nextAction() == MOVE)

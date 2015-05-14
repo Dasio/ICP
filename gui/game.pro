@@ -12,7 +12,7 @@ TARGET = labyrinth2015
 TEMPLATE = app
 QMAKE_CXXFLAGS += -std=c++11
 
-LIBS += -lboost_serialization
+LIBS += -lboost_serialization -static-libstdc++
 
 SOURCES += ../src/gui/main.cpp\
         ../src/gui/mainwindow.cpp \
@@ -27,11 +27,11 @@ HEADERS  += ../src/gui/mainwindow.h \
     ../src/game/MazeBoard.h \
     ../src/game/Stone.h
 
-FORMS    += mainwindow.ui \
-	game.ui
+FORMS    += ../gui/mainwindow.ui \
+	../gui/game.ui
 
 RESOURCES += \
-    resources.qrc
+    ../gui/resources.qrc
 
 DESTDIR = ../bin
 OBJECTS_DIR = ../obj/gui
